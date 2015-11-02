@@ -41,7 +41,8 @@ RUN sed -i 's/exit 101/exit 0/' /usr/sbin/policy-rc.d
 
 RUN apt-get update && \
     apt-get install -y gavodachs-server && \
-    apt-get clean
+    apt-get clean && \
+    gavo serve stop && service postgresql stop
 
 COPY etc/gavo.rc /etc/gavo.rc
 COPY bin/dachs.sh /dachs.sh

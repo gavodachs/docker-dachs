@@ -56,9 +56,15 @@ RUN service postgresql start                                                    
     apt-get clean                                                                                                   && \
     gavo serve stop && service postgresql stop
 
+RUN service postgresql start && \
+    PGFILE=$(su -l postgres -c "psql -t -P format=unaligned -c 'show hba_file;'") && \
+    echo 'host  all  all  172.17.0.0/24  trust' >> $PGFILE && \
+    echo "listen_addresses='*'" >> "${PGFILE%/*}/postgresql.conf" && \
+    service postgresql stop
+
 COPY etc/gavo.rc /etc/gavo.rc
 COPY bin/dachs.sh /dachs.sh
 
-EXPOSE 8080
+EXPOSE 5432
 #ENTRYPOINT ["/dachs.sh"]
 ENTRYPOINT ["/bin/bash"]

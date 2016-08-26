@@ -39,22 +39,21 @@ RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' > /etc/
 
 RUN sed -i 's/exit 101/exit 0/' /usr/sbin/policy-rc.d
 
-RUN apt-get update && apt-get install -y python-gavodachs
+RUN apt-get update                      && \
+    apt-get install -y python-gavodachs && \
+    apt-get clean                       && \
+    service postgresql stop
 
-EXPOSE 5432
-EXPOSE 8080
-
-RUN service postgresql restart && \
-    apt-get update && apt-get install -y gdebi-core                                             && \
-    apt-get download gavodachs-server                                                           && \
-    DEBFILE=$(ls -1 gavodachs-server*)                                                          && \
-    dpkg-deb -R $DEBFILE tmp                                                                    && \
-    sed -i 's/\(su -s\/bin\/sh -c\)\("gavo init"\)\(.*\)/\1 "gavo init -d host=psqlhost" \3/' tmp/DEBIAN/postinst                     && \
-#    sed -i 's/\(start_dachs\)$/#\1/' tmp/DEBIAN/postinst                                       && \
-#    sed -i 's/\(upgrade_dachs_env\)$/#\1/' tmp/DEBIAN/postinst                                      && \
-    dpkg-deb -b tmp $DEBFILE                                                                    && \
-#    dpkg -i $DEBFILE || apt-get -fy install  && dpkg -i $DEBFILE                                && \
-    gdebi --non-interactive $DEBFILE                                                                              && \
+RUN service postgresql start                                                                                        && \
+    apt-get update                                                                                                  && \
+    apt-get download gavodachs-server                                                                               && \
+    DEBFILE=$(ls -1 gavodachs-server*)                                                                              && \
+    dpkg-deb -R $DEBFILE tmp                                                                                        && \
+    sed -i 's/\(su -s\/bin\/sh -c\)\("gavo init"\)\(.*\)/\1 "gavo init -d host=postgres" \3/' tmp/DEBIAN/postinst   && \
+    dpkg-deb -b tmp $DEBFILE                                                                                        && \
+    apt-get install -y gdebi-core                                                                                   && \
+    gdebi --non-interactive $DEBFILE                                                                                && \
+    apt-get clean                                                                                                   && \
     gavo serve stop && service postgresql stop
 
 COPY etc/gavo.rc /etc/gavo.rc

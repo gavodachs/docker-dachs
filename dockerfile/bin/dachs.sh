@@ -1,9 +1,19 @@
 #!/bin/bash
 
-#supervisorctl start postgres dachs
+echo ''
+echo '================================================'
+echo 'This the (main) DaCHS server container, where'
+echo 'DaCHS daemon is meant to run.'
+echo 'This container expects to use another container'
+echo 'as the PostgreSQL databse server.'
+echo ''
+echo 'The Postgres container must be named *postgres*.'
+echo 'Using the proper name will make the connection'
+echo '"just work".'
+echo ''
+echo 'Apart from that restriction, DaCHS management'
+echo 'proceed as usual (imp, pub, etc.).'
+echo '================================================'
+echo ''
 
-service postgresql start 
-# After starting Postgres, wait a little bit to have it fully running
-sleep 30
-# then DaCHS will have the proper environment to run
-gavo serve debug
+service dachs start

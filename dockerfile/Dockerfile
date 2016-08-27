@@ -1,4 +1,4 @@
-FROM ubuntu:trusty
+FROM debian:jessie
 
 LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
       Author=Markus\ Demleitner \
@@ -50,4 +50,4 @@ COPY bin/dachs.sh /dachs.sh
 
 EXPOSE 8080
 
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/bin/bash --rcfile /dachs.sh"]

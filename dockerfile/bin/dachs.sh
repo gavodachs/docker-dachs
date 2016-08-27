@@ -1,9 +1,16 @@
 #!/bin/bash
 
-#supervisorctl start postgres dachs
+echo ''
+echo '==================================================='
+echo 'This is the PostgreSQL counterpart of DaCHS server.'
+echo 'Unless you want to put your hands on the databse,'
+echo 'you should be good to go and deal with the DaCHS'
+echo 'server main conatiner itself.'
+echo ''
+echo 'To make use of this guy here, just make sure to'
+echo 'run "dachs:server" with docker "--link" option'
+echo 'pointing to this container here.'
+echo '==================================================='
+echo ''
 
 service postgresql start 
-# After starting Postgres, wait a little bit to have it fully running
-sleep 30
-# then DaCHS will have the proper environment to run
-gavo serve debug

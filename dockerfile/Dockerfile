@@ -56,6 +56,8 @@ RUN service postgresql start                                                    
     apt-get clean                                                                                                   && \
     gavo serve stop && service postgresql stop
 
+RUN sed -i 's/^\(host\).*/\1 = postgres/' /var/gavo/etc/dsn
+
 COPY etc/gavo.rc /etc/gavo.rc
 COPY bin/dachs.sh /dachs.sh
 

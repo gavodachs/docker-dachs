@@ -61,6 +61,5 @@ RUN sed -i 's/^\(host\).*/\1 = postgres/' /var/gavo/etc/dsn
 COPY etc/gavo.rc /etc/gavo.rc
 COPY bin/dachs.sh /dachs.sh
 
-EXPOSE 8080
-#ENTRYPOINT ["/dachs.sh"]
+EXPOSE 80
 ENTRYPOINT ["/bin/bash"]

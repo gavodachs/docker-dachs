@@ -7,44 +7,31 @@ LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ O
 
 MAINTAINER "Carlos Brandt <carloshenriquebrandt at gmail>"
 
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN apt-get update && \
-    apt-get install -y sudo wget vim locales && \
+RUN DEBIAN_FRONTEND='noninteractive'            && \
+    apt-get update                              && \
+    apt-get install -y sudo wget vim locales    && \
     apt-get clean
 
 # This is the brute-force solution for Debian;
 # I am having problems in set locales non-interactively,
 # and since I really need the "C/UTF8" for postgres, will just set it for all.
-#ENV LC_ALL C.UTF-8
-#RUN echo LC_ALL="$LC_ALL" > /etc/default/locale
+ENV LC_ALL C.UTF-8
+RUN echo LC_ALL="$LC_ALL" > /etc/default/locale
 
-# I'll leave the lines below for further look;
-# These work just find under Ubuntu.
-# (Yeah, I'll remove these lines in the near future...probably...)
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_CTYPE C.UTF-8
-RUN locale-gen --purge $LANG && \
-    echo LANG="$LANG" > /etc/default/locale && \
-    echo LANGUAGE="$LANGUAGE" >> /etc/default/locale && \
-    echo LC_CTYPE="$LC_CTYPE" >> /etc/default/locale
-
-RUN echo 'deb http://vo.ari.uni-heidelberg.de/debian stable main' > /etc/apt/sources.list.d/gavo.list && \
-    echo 'deb-src http://vo.ari.uni-heidelberg.de/debian stable main' >> /etc/apt/sources.list.d/gavo.list && \
+RUN echo 'deb http://vo.ari.uni-heidelberg.de/debian stable main'      > /etc/apt/sources.list.d/gavo.list  && \
+    echo 'deb-src http://vo.ari.uni-heidelberg.de/debian stable main' >> /etc/apt/sources.list.d/gavo.list  && \
     wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
-
-RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' > /etc/apt/sources.list.d/pgdg.list && \
-    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
 RUN sed -i 's/exit 101/exit 0/' /usr/sbin/policy-rc.d
 
-RUN apt-get update                      && \
+RUN DEBIAN_FRONTEND='noninteractive'    && \
+    apt-get update                      && \
     apt-get install -y python-gavodachs && \
     apt-get clean                       && \
     service postgresql stop
 
-RUN service postgresql start                                                                                        && \
+RUN DEBIAN_FRONTEND='noninteractive'                                                                                && \
+    service postgresql start                                                                                        && \
     apt-get update                                                                                                  && \
     apt-get download gavodachs-server                                                                               && \
     DEBFILE=$(ls -1 gavodachs-server*)                                                                              && \
@@ -61,5 +48,6 @@ RUN sed -i 's/^\(host\).*/\1 = postgres/' /var/gavo/etc/dsn
 COPY etc/gavo.rc /etc/gavo.rc
 COPY bin/dachs.sh /dachs.sh
 
-EXPOSE 80
+EXPOSE 8080
+
 ENTRYPOINT ["/bin/bash"]

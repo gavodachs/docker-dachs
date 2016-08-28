@@ -54,4 +54,5 @@ COPY bin/dachs.sh /dachs.sh
 
 EXPOSE 5432
 
-ENTRYPOINT ["/dachs.sh"]
+ENTRYPOINT ["/bin/bash"]
+CMD ["--rcfile","/dachs.sh"]

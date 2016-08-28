@@ -50,4 +50,5 @@ COPY bin/dachs.sh /dachs.sh
 
 EXPOSE 8080
 
-ENTRYPOINT ["/bin/bash --rcfile /dachs.sh"]
+ENTRYPOINT ["/bin/bash"]
+CMD ["--rcfile","/dachs.sh"]

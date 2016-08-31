@@ -1,6 +1,6 @@
 # DaCHS on Docker
 
-This repository contains the image/dockerfiles for GAVO DaCHS.
+This repository contains the image/dockerfiles for [GAVO DaCHS](http://docs.g-vo.org/DaCHS/).
 
 [DaCHS][1] is a suite for managing astronomical data publication through Virtual Observatory (VO) 
 standards (see [IVOA][2]).
@@ -34,17 +34,18 @@ the user is encouraged to read the respective [Dockerfile][5].
 
 [5]: https://github.com/chbrandt/docker-dachs/tree/master/dockerfile/data
 
-* *Note-1:* the `postgres` container _must_ be named "postgres".
-* *Note-2:* the `server` container exposes port "8080".
-* *OBS:* lines below call `dachs:data` as an example for adding volumes.
+* *Note-1:* the `postgres` container _must_ be named "*postgres*".
+* *Note-2:* the `server` container exposes port "*8080*".
+* *OBS:* the lines below call `dachs:data` just as an example on adding data volumes.
 
 ```
 $ docker run -d --name arihip chbrandt/dachs:data
+$
 $ docker run -dt --name postgres chbrandt/dachs:postgres
 $ docker run -it --name dachs --link postgres --volumes-from arihip -p 8080:8080 chbrandt/dachs:server
 ```
 
-_Any doubt, error or comment, please file a [issue on Github](https://github.com/chbrandt/docker-dachs/issues)_
+_Any doubt, comment or error, please file an [issue on Github](https://github.com/chbrandt/docker-dachs/issues)_
 
 (Y)
 Carlos

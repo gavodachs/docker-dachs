@@ -33,6 +33,6 @@ RUN DEBIAN_FRONTEND='noninteractive'            && \
 COPY etc/gavo.rc /etc/gavo.rc
 COPY bin/dachs.sh /dachs.sh
 
-EXPOSE 8080
+EXPOSE 80
 
 ENTRYPOINT ["/bin/bash --rcfile /dachs.sh"]

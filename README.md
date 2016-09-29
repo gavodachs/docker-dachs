@@ -26,11 +26,14 @@ also individually built.
 
 ## How to use it
 
-As said, the "main" images -- meaning the ones it is believed to provide a better use of Dachs 
-and Docker -- are `dachs:server` and `dachs:postgres` tags. `dachs:latest` is exactly what a 
-default install procedure would provide to user on his/her own bare machine.
-`dachs:data` is here to provide a starting point to the user on how to add Resource Descriptors,
-the user is encouraged to read the respective [Dockerfile][5].
+`dachs:server` and `dachs:postgres` are the "main" images -- meaning the ones it is believed to 
+provide a better use of Dachs and Docker.
+
+`dachs:latest` is exactly what a default install procedure would provide to user on his/her own 
+bare machine.
+
+`dachs:data` is here to provide a starting point -- it is an example for inserting the data 
+as volumes into the framework. The contents can be seeing [here, at the Dockerfile][5].
 
 [5]: https://github.com/chbrandt/docker-dachs/tree/master/dockerfile/data
 
@@ -38,12 +41,43 @@ the user is encouraged to read the respective [Dockerfile][5].
 * *Note-2:* the `server` container exposes port "*80*".
 * *OBS:* the lines below call `dachs:data` just as an example on adding data volumes.
 
+### the Data
+
+Before actually running the (dachs) server, we need to think about the data to be used.
+Dachs maintains its datasets under `/var/gavo/inputs`; we should then provide the data and
+its respective Resource Descriptor accordingly.
+
+The lines below provide an example on how to create such `data-volume` to be used by `dachs`:
 ```
-$ docker run -d --name arihip chbrandt/dachs:data
-$
+$ mkdir -p arihip/data
+$ cd arihip && curl -O http://svn.ari.uni-heidelberg.de/svn/gavo/hdinputs/arihip/q.rd
+$ cd data   && curl -O http://dc.g-vo.org/arihip/q/cone/static/data.txt.gz
+$ cd ../..
+$ docker run -d --name arihip -v $PWD/arihip:/var/gavo/inputs/arihip debian:jessie
+```
+Where "`debian:jessie`" can be substituted by any other image, but since this is the base
+image of all the images being dealt here, it is convenient to use it.
+
+The exactly same `volume` is provided by `$ docker run -d --name arihip chbrandt/dachs:data`.
+
+### the Servers
+After dealing with the data to be used by Dachs, we can effectively start the "main" containers:
+```
 $ docker run -dt --name postgres chbrandt/dachs:postgres
 $ docker run -it --name dachs --link postgres --volumes-from arihip -p 80:80 chbrandt/dachs:server
 ```
+Notice that any number of volumes -- here only "arihip" was used -- can be mounted.
+
+After doing so a command line from inside the `dachs:server` container will show up.
+Now, usual gavo/dachs maintainance tasks apply.
+For instance, to see the "arihip" data on your browser's `http://localhost:8080`, you'd go through:
+```
+[inside docker] $ gavo imp arihip/q.rd
+[inside docker] $ gavo pub arihip/q.rd
+[inside docker] $ service dachs reload
+```
+
+That should work. You should now see ARIHIP data at `http://localhost:8080`.
 
 _Any doubt, comment or error, please file an [issue on Github](https://github.com/chbrandt/docker-dachs/issues)_
 

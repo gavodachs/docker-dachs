@@ -53,9 +53,9 @@ $ mkdir -p arihip/data
 $ cd arihip && curl -O http://svn.ari.uni-heidelberg.de/svn/gavo/hdinputs/arihip/q.rd
 $ cd data   && curl -O http://dc.g-vo.org/arihip/q/cone/static/data.txt.gz
 $ cd ../..
-$ docker run -d --name arihip -v $PWD/arihip:/var/gavo/inputs/arihip debian:jessie
+$ docker run -d --name arihip -v $PWD/arihip:/var/gavo/inputs/arihip debian
 ```
-Where "`debian:jessie`" can be substituted by any other image, but since this is the base
+Where "`debian`" can be substituted by any other image, but since this is the base
 image of all the images being dealt here, it is convenient to use it.
 
 The exactly same `volume` is provided by `$ docker run -d --name arihip chbrandt/dachs:data`.

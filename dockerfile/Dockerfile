@@ -49,7 +49,6 @@ RUN service postgresql start && \
     echo "listen_addresses='*'" >> "${PGFILE%/*}/postgresql.conf" && \
     service postgresql stop
 
-COPY etc/gavo.rc /etc/gavo.rc
 COPY bin/dachs.sh /dachs.sh
 
 EXPOSE 5432

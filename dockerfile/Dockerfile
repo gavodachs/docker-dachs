@@ -7,9 +7,9 @@ LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ O
 
 MAINTAINER "Carlos Brandt <carloshenriquebrandt at gmail>"
 
-RUN DEBIAN_FRONTEND='noninteractive'            && \
-    apt-get update                              && \
-    apt-get install -y sudo wget vim locales    && \
+RUN DEBIAN_FRONTEND='noninteractive'               && \
+    apt-get update                                 && \
+    apt-get install -y sudo wget vim locales git   && \
     apt-get clean
 
 # This is the brute-force solution for Debian;

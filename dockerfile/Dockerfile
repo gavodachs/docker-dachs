@@ -31,8 +31,12 @@ RUN DEBIAN_FRONTEND='noninteractive'            && \
     gavo serve stop && service postgresql stop
 
 COPY etc/gavo.rc /etc/gavo.rc
-COPY bin/dachs.sh /dachs.sh
+
+ENV GAVO_ROOT=/var/gavo
+ENV GAVO_INPUTS=$GAVO_ROOT/inputs
 
 EXPOSE 80
+
+COPY bin/dachs.sh /dachs.sh
 
 CMD ["/bin/bash", "--rcfile", "/dachs.sh"]

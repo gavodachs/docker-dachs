@@ -49,9 +49,8 @@ RUN service postgresql start && \
     echo "listen_addresses='*'" >> "${PGFILE%/*}/postgresql.conf" && \
     service postgresql stop
 
-COPY bin/dachs.sh /dachs.sh
-
 EXPOSE 5432
 
-ENTRYPOINT ["/bin/bash"]
-CMD ["--rcfile","/dachs.sh"]
+COPY bin/dachs.sh /dachs.sh
+
+CMD ["/bin/bash", "--rcfile", "/dachs.sh"]

@@ -45,9 +45,9 @@ RUN DEBIAN_FRONTEND='noninteractive'                                            
 
 RUN sed -i 's/^\(host\).*/\1 = postgres/' /var/gavo/etc/dsn
 
+EXPOSE 80
+
 COPY etc/gavo.rc /etc/gavo.rc
 COPY bin/dachs.sh /dachs.sh
-
-EXPOSE 80
 
 CMD ["/bin/bash", "--rcfile", "/dachs.sh"]

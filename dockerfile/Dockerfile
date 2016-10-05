@@ -38,6 +38,7 @@ ENV GAVO_INPUTS=$GAVO_ROOT/inputs
 EXPOSE 80
 EXPOSE 8080
 
-COPY bin/dachs.sh /dachs.sh
+COPY src/help.sh /help.sh
 
-CMD ["/bin/bash", "--rcfile", "/dachs.sh"]
+CMD ["/bin/bash", "--rcfile", "/help.sh"]
+

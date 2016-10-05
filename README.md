@@ -2,37 +2,37 @@
 
 This repository contains the image/dockerfiles for [GAVO DaCHS](http://docs.g-vo.org/DaCHS/).
 
-[DaCHS][1] is a suite for managing astronomical data publication through Virtual Observatory (VO) 
+[DaCHS][1] is a suite for managing astronomical data publication through Virtual Observatory (VO)
 standards (see [IVOA][2]).
 
 [1]: http://dachs-doc.readthedocs.io
 [2]: http://www.ivoa.net
 
-The DaCHS software provides data access services while keeping two daemons running in background, 
-a DBMS (PostgreSQL) server and the Dachs server itself responsible for the data management 
+The DaCHS software provides data access services while keeping two daemons running in background,
+a DBMS (PostgreSQL) server and the Dachs server itself responsible for the data management
 between user interface and database handling.
 
-The [Github][3] repository has three branches, `master`, `dachs`, `postgres`, hosting four 
+The [Github][3] repository has three branches, `master`, `dachs`, `postgres`, hosting four
 dockerfiles, each associated with a different image on [Docker Hub][4].
 
 [3]: https://github.com/chbrandt/docker-dachs
 [4]: https://hub.docker.com/r/chbrandt/dachs/
 
-While the `master` branch provides the "default" -- `latest` -- image, containing the all-in-one 
-package (dachs + postgres), the other branches `dachs` and `postgres` provide the respective 
+While the `master` branch provides the "default" -- `latest` -- image, containing the all-in-one
+package (dachs + postgres), the other branches `dachs` and `postgres` provide the respective
 servers on their own.
-The `master` branch has _two_ dockerfiles actually: the one inside `data/` is a dataset example, 
+The `master` branch has _two_ dockerfiles actually: the one inside `data/` is a dataset example,
 also individually built.
 
 ## How to use it
 
-`dachs:server` and `dachs:postgres` are the "main" images -- meaning the ones it is believed to 
+`dachs:server` and `dachs:postgres` are the "main" images -- meaning the ones it is believed to
 provide a better use of Dachs and Docker.
 
-`dachs:latest` is exactly what a default install procedure would provide to user on his/her own 
+`dachs:latest` is exactly what a default install procedure would provide to user on his/her own
 bare machine.
 
-`dachs:data` is here to provide a starting point -- it is an example for inserting the data 
+`dachs:data` is here to provide a starting point -- it is an example for inserting the data
 as volumes into the framework. The contents can be seeing [here, at the Dockerfile][5].
 
 [5]: https://github.com/chbrandt/docker-dachs/tree/master/dockerfile/data
@@ -70,14 +70,14 @@ Notice that any number of volumes -- here only "arihip" was used -- can be mount
 
 After doing so a command line from inside the `dachs:server` container will show up.
 Now, usual gavo/dachs maintainance tasks apply.
-For instance, to see the "arihip" data on your browser's `http://localhost:8080`, you'd go through:
+For instance, to see the "arihip" data on your browser's `http://localhost[:80]`, you'd go through:
 ```
 [inside docker] $ gavo imp arihip/q.rd
 [inside docker] $ gavo pub arihip/q.rd
 [inside docker] $ service dachs reload
 ```
 
-That should work. You should now see ARIHIP data at `http://localhost:8080`.
+That should work. You should now see ARIHIP data at `http://localhost[:80]`.
 
 _Any doubt, comment or error, please file an [issue on Github](https://github.com/chbrandt/docker-dachs/issues)_
 

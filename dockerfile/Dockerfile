@@ -36,6 +36,7 @@ ENV GAVO_ROOT=/var/gavo
 ENV GAVO_INPUTS=$GAVO_ROOT/inputs
 
 EXPOSE 80
+EXPOSE 8080
 
 COPY bin/dachs.sh /dachs.sh
 

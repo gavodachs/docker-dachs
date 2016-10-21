@@ -1,31 +1,31 @@
 version: '2'
+
 services:
+
     dachs:
         container_name: dachs
         image: chbrandt/dachs:server
         tty: true
+        network_mode: 'bridge'
         ports:
             - '80:80'
-        # volumes:
-        #     - data:/var/gavo/inputs
-        #     - system:/var/gavo/inputs/__system
+        volumes:
+            - dachs_system_data:/var/gavo/inputs/__system
+            - dachs_inputs_data:/var/gavo/inputs
         links:
             - postgres
         depends_on:
             - postgres
-        networks:
-            - app
+
     postgres:
         container_name: postgres
         image: chbrandt/dachs:postgres
         tty: true
-        # volumes:
-        #     - data:/var/lib/postgresql/9.4/main
-        networks:
-            - app
-networks:
-    app:
-        driver: bridge
+        network_mode: 'bridge'
+        volumes:
+            - postgres_data:/var/lib/postgresql/9.4/main
+
 volumes:
-    data:
-    system:
+    dachs_system_data:
+    dachs_inputs_data:
+    postgres_data:

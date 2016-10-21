@@ -2,3 +2,4 @@
 sitename: Dachs-on-Docker
 bindAddress:
 serverPort: 80
+serverURL: http://localhost

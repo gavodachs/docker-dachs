@@ -7,6 +7,8 @@ LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ O
 
 MAINTAINER "Carlos Brandt <carloshenriquebrandt at gmail>"
 
+ENV PG_VERSION 9.4
+
 RUN DEBIAN_FRONTEND='noninteractive'               && \
     apt-get update                                 && \
     apt-get install -y sudo wget vim locales git   && \
@@ -20,34 +22,27 @@ RUN echo LC_ALL="$LC_ALL" > /etc/default/locale
 
 RUN echo 'deb http://vo.ari.uni-heidelberg.de/debian stable main'      > /etc/apt/sources.list.d/gavo.list  && \
     echo 'deb-src http://vo.ari.uni-heidelberg.de/debian stable main' >> /etc/apt/sources.list.d/gavo.list  && \
-    wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
+    wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add - \
+		DEBIAN_FRONTEND='noninteractive'                                  && \
+    	apt-get update                                                  && \
+    	apt-get install -y postgresql-$PG_VERSION                       && \
+    	apt-get install -y postgresql-$PG_VERSION-pgsphere              && \
+    	apt-get install -y postgresql-$PG_VERSION-q3c                   && \
+    	apt-get clean
 
-RUN sed -i 's/exit 101/exit 0/' /usr/sbin/policy-rc.d
-
-RUN DEBIAN_FRONTEND='noninteractive'    && \
-    apt-get update                      && \
-    apt-get install -y python-gavodachs && \
-    apt-get clean                       && \
-    service postgresql stop
-
-RUN DEBIAN_FRONTEND='noninteractive'                                                                                && \
-    service postgresql start                                                                                        && \
-    apt-get update                                                                                                  && \
-    apt-get download gavodachs-server                                                                               && \
-    DEBFILE=$(ls -1 gavodachs-server*)                                                                              && \
-    dpkg-deb -R $DEBFILE tmp                                                                                        && \
-    sed -i 's/\(su -s\/bin\/sh -c\)\("gavo init"\)\(.*\)/\1 "gavo init -d host=postgres" \3/' tmp/DEBIAN/postinst   && \
-    dpkg-deb -b tmp $DEBFILE                                                                                        && \
-    apt-get install -y gdebi-core                                                                                   && \
-    gdebi --non-interactive $DEBFILE                                                                                && \
-    apt-get clean                                                                                                   && \
-    gavo serve stop && service postgresql stop
-
-RUN service postgresql start && \
-    PGFILE=$(su -l postgres -c "psql -t -P format=unaligned -c 'show hba_file;'") && \
+RUN PGFILE=/etc/postgresql/$PG_VERSION/main/pg_hba.conf && \
     echo 'host  all  all  172.17.0.0/24  trust' >> $PGFILE && \
-    echo "listen_addresses='*'" >> "${PGFILE%/*}/postgresql.conf" && \
-    service postgresql stop
+    echo "listen_addresses='*'" >> "${PGFILE%/*}/postgresql.conf"
+
+RUN PGDATA=/var/lib/postgresql/9.4 \
+	mkdir -p -m 777 /var/run/postgresql/9.4-main.pg_stat_tmp/ \
+	su - postgres  -c "/usr/lib/postgresql/9.4/bin/postgres \
+		-c config_file=/etc/postgresql/9.4/main/postgresql.conf \
+		-c logging_collector=on" & \
+	sleep 5 # Ouch: wait for postgres to come up.  Better way?  \
+	su postgres -c "createuser -s dachsroot" \
+	su postgres -c "createdb gavo" \
+
 
 EXPOSE 5432
 

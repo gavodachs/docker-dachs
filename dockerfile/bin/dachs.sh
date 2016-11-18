@@ -16,4 +16,8 @@ echo 'proceed as usual (imp, pub, etc.).'
 echo '================================================'
 echo ''
 
-service dachs start
+# first, make sure the environment is initialised (can't do that
+# at image build time since the postgres container is not available then)
+su dachsroot -c "gavo init -d 'host=postgres dbname=gavo'"
+
+su dachsroot -c "gavo serve debug"

@@ -12,13 +12,10 @@ RUN DEBIAN_FRONTEND='noninteractive'               && \
     apt-get install -y sudo wget vim locales git   && \
     apt-get clean
 
-# This is the brute-force solution for Debian;
-# I am having problems in set locales non-interactively,
-# and since I really need the "C/UTF8" for postgres, will just set it for all.
 ENV LANG C.UTF-8
 RUN echo LANG="$LANG" > /etc/default/locale
 
-RUN echo 'deb http://vo.ari.uni-heidelberg.de/debian stable main'      > /etc/apt/sources.list.d/gavo.list  && \
+RUN echo 'deb http://vo.ari.uni-heidelberg.de/debian stable main' > /etc/apt/sources.list.d/gavo.list  && \
     wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
 
 RUN DEBIAN_FRONTEND='noninteractive'    && \
@@ -26,14 +23,14 @@ RUN DEBIAN_FRONTEND='noninteractive'    && \
     apt-get install -y python-gavodachs && \
     apt-get clean
 
-RUN addgroup --system gavo && \
-	adduser --system --ingroup gavo gavo && \
-	adduser --disabled-password --gecos "" --ingroup gavo dachsroot && \
-	adduser --quiet gavo gavo && \
-	adduser --quiet dachsroot gavo && \
-	mkdir -m 775 /var/gavo && \
-	chown dachsroot /var/gavo
-	
+RUN addgroup --system gavo                                          && \
+    adduser --system --ingroup gavo gavo                            && \
+    adduser --disabled-password --gecos "" --ingroup gavo dachsroot && \
+    adduser --quiet gavo gavo                                       && \
+    adduser --quiet dachsroot gavo                                  && \
+    mkdir -m 775 /var/gavo                                          && \
+    chown dachsroot /var/gavo
+
 EXPOSE 80
 
 COPY etc/gavo.rc /etc/gavo.rc

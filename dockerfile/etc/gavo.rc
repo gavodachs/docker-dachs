@@ -1,3 +1,4 @@
 [web]
 bindAddress:
 serverPort: 80
+serverURL: http://localhost

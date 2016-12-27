@@ -20,4 +20,4 @@ echo ''
 # at image build time since the postgres container is not available then)
 su dachsroot -c "gavo init -d 'host=postgres dbname=gavo'"
 
-su dachsroot -c "gavo serve debug"
+gavo serve debug

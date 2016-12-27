@@ -18,6 +18,15 @@ echo ''
 
 # first, make sure the environment is initialised (can't do that
 # at image build time since the postgres container is not available then)
+echo -n "Waiting for postgres to come up..."
+while ! su - dachsroot -c "psql -h postgres --quiet gavo -c 'SELECT 1' > /dev/null 2>&1"  ;
+do
+    sleep 5
+    echo -n .
+done
+echo
+
+
 su dachsroot -c "gavo init -d 'host=postgres dbname=gavo'"
 
 gavo serve debug

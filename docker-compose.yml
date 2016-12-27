@@ -4,14 +4,14 @@ services:
 
     dachs:
         container_name: dachs
-        image: chbrandt/dachs:server
+        image: dachs
         tty: true
         network_mode: 'bridge'
         ports:
             - '80:80'
-        volumes:
-            - dachs_system_data:/var/gavo/inputs/__system
-            - dachs_inputs_data:/var/gavo/inputs
+#        volumes:
+#            - dachs_system_data:/var/gavo/inputs/__system
+#            - dachs_inputs_data:/var/gavo/inputs
         links:
             - postgres
         depends_on:
@@ -19,13 +19,13 @@ services:
 
     postgres:
         container_name: postgres
-        image: chbrandt/dachs:postgres
+        image: postgres
         tty: true
         network_mode: 'bridge'
-        volumes:
-            - postgres_data:/var/lib/postgresql/9.4/main
+#        volumes:
+#            - postgres_data:/var/lib/postgresql/9.4/main
 
-volumes:
-    dachs_system_data:
-    dachs_inputs_data:
-    postgres_data:
+#volumes:
+#    dachs_system_data:
+#    dachs_inputs_data:
+#    postgres_data:

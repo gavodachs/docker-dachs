@@ -1,5 +1,10 @@
 # DaCHS on Docker
 
+Summary
+
+* [How to use it](#how-to-use-it)
+* [Using Docker-Compose](#using-docker-compose)
+
 This repository contains the image/dockerfiles for [GAVO DaCHS](http://docs.g-vo.org/DaCHS/).
 
 [DaCHS][1] is a suite for managing astronomical data publication through Virtual Observatory (VO)
@@ -78,6 +83,42 @@ For instance, to see the "arihip" data on your browser's `http://localhost[:80]`
 ```
 
 That should work. You should now see ARIHIP data at `http://localhost[:80]`.
+
+
+## Using Docker-Compose
+
+The `docker-compose.yml` file assembles all the parameters necessary to run
+both containers -- `postgres` and `dachs` -- synchronously.
+
+The [Compose file](https://github.com/chbrandt/docker-dachs/blob/master/docker-compose.yml)
+is basically:
+```
+version: '2'
+services:
+
+    dachs:
+        container_name: dachs
+        image: chbrandt/dachs:server
+        tty: true
+        network_mode: 'bridge'
+        ports:
+            - '80:80'
+        links:
+            - postgres
+        depends_on:
+            - postgres
+
+    postgres:
+        container_name: postgres
+        image: chbrandt/dachs:postgres
+        tty: true
+        network_mode: 'bridge'
+```
+
+To run from the compose file, type:
+```
+# docker-compose up
+```
 
 _Any doubt, comment or error, please file an [issue on Github](https://github.com/chbrandt/docker-dachs/issues)_
 

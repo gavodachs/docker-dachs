@@ -37,9 +37,7 @@ The goal here is to just provide a straight way of having Dachs working on your 
 
 To run this image, just type:
 ```
-
 (host)$ docker run -it -p 80:80 chbrandt/dachs:latest
-
 ```
 Usual Dachs/DB management applies then.
 

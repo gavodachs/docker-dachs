@@ -29,4 +29,4 @@ echo
 
 su dachsroot -c "gavo init -d 'host=postgres dbname=gavo'"
 
-gavo serve debug
+gavo serve start

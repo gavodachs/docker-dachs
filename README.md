@@ -3,7 +3,9 @@
 Summary
 
 * [How to use it](#how-to-use-it)
-* [Using Docker-Compose](#using-docker-compose)
+ * [Compose data volumes](#compose-data-volumes)
+ * [Complete workflow example](#complete-workflow-example)
+* [Further ways of running Dachs](#further-ways-of-running-dachs)
 
 This repository contains the image/dockerfiles for [GAVO DaCHS](http://docs.g-vo.org/DaCHS/).
 

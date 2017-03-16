@@ -107,11 +107,13 @@ If *yes*, proceed, otherwise email me (the service should start after
 ```
 [host] $ docker run -it --rm --name temp  \
           --volumes-from dachs            \
-          debian
+          debian:jessie
 ```
 
 4. From *inside* the `temp` container, download and save the data:
 ```
+[at-temp] $ apt-get update
+[at-temp] $ apt-get install curl
 [at-temp] $ mkdir arihip
 [at-temp] $ cd arihip
 [at-temp] $ curl -O http://svn.ari.uni-heidelberg.de/svn/gavo/hdinputs/arihip/q.rd

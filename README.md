@@ -114,19 +114,18 @@ If *yes*, proceed, otherwise email me (the service should start after
 ```
 [at-temp] $ apt-get update
 [at-temp] $ apt-get install curl
-[at-temp] $ mkdir arihip
-[at-temp] $ cd arihip
+[at-temp] $ mkdir /var/gavo/inputs
+[at-temp] $ mkdir arihip && cd arihip
 [at-temp] $ curl -O http://svn.ari.uni-heidelberg.de/svn/gavo/hdinputs/arihip/q.rd
-[at-temp] $ mkdir data
-[at-temp] $ cd data
+[at-temp] $ mkdir data && cd data
 [at-temp] $ curl -O http://dc.g-vo.org/arihip/q/cone/static/data.txt.gz
 ```
 We can now exit from the `temp` container.
 
 5. Finally, we just need to run the `import`/`publish` commands for `dachs`:
 ```
-[from-host] $ docker exec -t dachs gavo import arihip/q
-[from-host] $ docker exec -t dachs gavo publish arihip/q
+[from-host] $ docker exec -t dachs gavo import /var/gavo/inputs/arihip/q.rd
+[from-host] $ docker exec -t dachs gavo publish /var/gavo/inputs/arihip/q.rd
 [from-host] $ docker exec -t dachs gavo serve restart
 ```
 

@@ -23,17 +23,20 @@ RUN DEBIAN_FRONTEND='noninteractive'    && \
     apt-get install -y python-gavodachs && \
     apt-get clean
 
+ENV GAVO_ROOT="/var/gavo"                       \
+    GAVOSETTINGS="${GAVO_ROOT}/etc/gavo.rc"
+    
 RUN addgroup --system gavo                                          && \
     adduser --system --ingroup gavo gavo                            && \
     adduser --disabled-password --gecos "" --ingroup gavo dachsroot && \
     adduser --quiet gavo gavo                                       && \
     adduser --quiet dachsroot gavo                                  && \
-    mkdir -m 775 /var/gavo                                          && \
-    chown dachsroot /var/gavo
+    mkdir -m 775 "${GAVO_ROOT}"                                     && \
+    chown dachsroot "${GAVO_ROOT}"
 
 EXPOSE 80
 
-COPY etc/gavo.rc /etc/gavo.rc
+COPY etc/gavo.rc "$GAVOSETTINGS"
 
 COPY bin/dachs.sh /dachs.sh
 

@@ -48,7 +48,7 @@ $ docker-compose up
 ...wait a few seconds and the web interface should show up at `http://localhost`.
 
 *If you want to see further details about running DaCHS on Docker without
-the compose, take a look at [Further ways of running Dachs](further-ways-of-running-dachs).*
+the compose, take a look at [Further ways of running Dachs](#further-ways-of-running-dachs).*
 
 After the service has been started, you can run commands to control
 Dachs through docker's `exec` command.

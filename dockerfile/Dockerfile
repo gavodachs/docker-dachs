@@ -15,18 +15,19 @@ RUN DEBIAN_FRONTEND='noninteractive'               && \
 ENV LANG C.UTF-8
 RUN echo LANG="$LANG" > /etc/default/locale
 
-RUN echo 'deb http://vo.ari.uni-heidelberg.de/debian release main' > /etc/apt/sources.list.d/gavo.list  && \
+RUN echo 'deb http://vo.ari.uni-heidelberg.de/debian release main'  \
+        > /etc/apt/sources.list.d/gavo.list                         && \
     wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
 
-RUN DEBIAN_FRONTEND='noninteractive'    && \
-    apt-get update                      && \
-    apt-get install -y python-gavodachs postgresql-9.6-q3c && \
+RUN DEBIAN_FRONTEND='noninteractive'                        && \
+    apt-get update                                          && \
+    apt-get install -y python-gavodachs postgresql-9.6-q3c  && \
     apt-get clean
 
 ENV GAVO_ROOT="/var/gavo"                       \
     GAVOSETTINGS="${GAVO_ROOT}/etc/gavo.rc"     \
     PGHOST="postgres"
-    
+
 RUN addgroup --system gavo                                          && \
     adduser --system --ingroup gavo gavo                            && \
     adduser --disabled-password --gecos "" --ingroup gavo dachsroot && \

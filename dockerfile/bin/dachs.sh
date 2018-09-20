@@ -26,7 +26,6 @@ do
 done
 echo
 
-
 su dachsroot -c "gavo init -d 'host=postgres dbname=gavo'"
 
 gavo serve start

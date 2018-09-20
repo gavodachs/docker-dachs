@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM debian:stretch
 
 LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
       Author=Markus\ Demleitner \
@@ -7,11 +7,11 @@ LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ O
 
 MAINTAINER "Carlos Brandt <carloshenriquebrandt at gmail>"
 
-ENV PG_VERSION 9.4
+ENV PG_VERSION 9.6
 
 RUN DEBIAN_FRONTEND='noninteractive'               && \
     apt-get update                                 && \
-    apt-get install -y sudo wget vim locales git   && \
+    apt-get install -y sudo wget vim locales git gnupg  && \
     apt-get clean
 
 ENV LANG C.UTF-8

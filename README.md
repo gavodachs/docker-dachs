@@ -214,6 +214,31 @@ And then you could run:
 ```
 
 
+## Debugging things
+
+If things don't work and you want to fix the docker files
+
+```
+(host)$ git clone https://github.com/chbrandt/docker-dachs
+(host)$ cd docker-dachs
+# The repo uses different branches to keep the dockerfiles for
+# dachs and postgres, respectively:
+(host)$ git checkout postgres
+# use --no-cache to verify things actually build properly from scratch
+(host)$ docker build -t dachs_postgres dockerfile/
+# do the same for the dachs container
+(host)$ git checkout dachs
+(host)$ docker build -t dachs_dachs dockerfile/
+```
+
+Now open two shells; while you'll normally want to run things in detached mode
+and just jump in with `docker exec -it dachs bash` (or so), for debugging
+it's usually a good idea to see what's going on:
+
+```
+(host)$ docker run --rm -it --name postgres dachs_postgres
+(host)$ docker run --rm -it --name dachs --link postgres -p 80:80 dachs_dachs
+```
 
 _Any doubt, comment or error, please file an [issue on Github](https://github.com/chbrandt/docker-dachs/issues)_
 

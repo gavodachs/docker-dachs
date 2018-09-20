@@ -24,7 +24,7 @@ RUN DEBIAN_FRONTEND='noninteractive'    && \
     apt-get clean
 
 ENV GAVO_ROOT="/var/gavo"                       \
-    GAVOSETTINGS="${GAVO_ROOT}/etc/gavo.rc"
+    GAVOSETTINGS="${GAVO_ROOT}/etc/gavo.rc"     \
     PGHOST="postgres"
     
 RUN addgroup --system gavo                                          && \

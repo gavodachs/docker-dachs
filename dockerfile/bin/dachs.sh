@@ -13,9 +13,9 @@ echo 'pointing to this container here.'
 echo '==================================================='
 echo ''
 
-export PGDATA=/var/lib/postgresql/9.4 
+export PGDATA=/var/lib/postgresql/9.6 
 # postgres needs this directory for log files; then start postgres
-mkdir -p -m 777 /var/run/postgresql/9.4-main.pg_stat_tmp/
-su - postgres  -c "/usr/lib/postgresql/9.4/bin/postgres \
-	-c config_file=/etc/postgresql/9.4/main/postgresql.conf \
+mkdir -p -m 777 /var/run/postgresql/9.6-main.pg_stat_tmp/
+su - postgres  -c "/usr/lib/postgresql/9.6/bin/postgres \
+	-c config_file=/etc/postgresql/9.6/main/postgresql.conf \
 	-c logging_collector=on"

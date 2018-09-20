@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM debian:stretch
 
 LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
       Author=Markus\ Demleitner \
@@ -20,7 +20,7 @@ RUN echo 'deb http://vo.ari.uni-heidelberg.de/debian release main' > /etc/apt/so
 
 RUN DEBIAN_FRONTEND='noninteractive'    && \
     apt-get update                      && \
-    apt-get install -y python-gavodachs && \
+    apt-get install -y python-gavodachs postgresql-9.6-q3c && \
     apt-get clean
 
 ENV GAVO_ROOT="/var/gavo"                       \

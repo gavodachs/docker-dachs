@@ -18,7 +18,6 @@ ENV LANG C.UTF-8
 RUN echo LANG="$LANG" > /etc/default/locale
 
 RUN echo 'deb http://vo.ari.uni-heidelberg.de/debian release main'      > /etc/apt/sources.list.d/gavo.list  && \
-    echo 'deb-src http://vo.ari.uni-heidelberg.de/debian release main' >> /etc/apt/sources.list.d/gavo.list  && \
     wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
 
 RUN DEBIAN_FRONTEND='noninteractive'                                && \
@@ -39,6 +38,7 @@ RUN PGDATA=/var/lib/postgresql/${PG_VERSION}                            \
       -c logging_collector=on"                                          & \
     sleep 5                                                             && \
     su postgres -c "createuser -s dachsroot"                            && \
+    su postgres -c "createuser -s root"                                 && \
     su postgres -c "createdb gavo"
 
 

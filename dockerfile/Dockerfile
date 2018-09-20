@@ -25,6 +25,7 @@ RUN DEBIAN_FRONTEND='noninteractive'    && \
 
 ENV GAVO_ROOT="/var/gavo"                       \
     GAVOSETTINGS="${GAVO_ROOT}/etc/gavo.rc"
+    PGHOST="postgres"
     
 RUN addgroup --system gavo                                          && \
     adduser --system --ingroup gavo gavo                            && \

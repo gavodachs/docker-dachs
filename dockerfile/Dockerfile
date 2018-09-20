@@ -38,6 +38,7 @@ RUN PGDATA=/var/lib/postgresql/${PG_VERSION}                            \
       -c logging_collector=on"                                          & \
     sleep 5                                                             && \
     su postgres -c "createuser -s dachsroot"                            && \
+    su postgres -c "createuser -s root"                                 && \
     su postgres -c "createdb gavo"
 
 

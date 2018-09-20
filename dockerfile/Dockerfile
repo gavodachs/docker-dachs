@@ -9,7 +9,7 @@ MAINTAINER "Carlos Brandt <carloshenriquebrandt at gmail>"
 
 RUN DEBIAN_FRONTEND='noninteractive'               && \
     apt-get update                                 && \
-    apt-get install -y sudo wget vim locales git   && \
+    apt-get install -y sudo wget vim locales git gnupg   && \
     apt-get clean
 
 ENV LANG C.UTF-8

@@ -2,22 +2,130 @@
 
 Summary
 
+* [Getting started](#getting-started)
+  * [Feeding data: ARIHIP example](#feeding-data--arihip-example)
+    * [A note on data persistence](#a-note-on-data-persistence)
+
+
+* [This repository structure](#this-repository-structure)
+*
 * [How to use it](#how-to-use-it)
  * [Compose data volumes](#compose-data-volumes)
  * [Complete workflow example](#complete-workflow-example)
 * [Further ways of running Dachs](#further-ways-of-running-dachs)
 
-This repository contains the image/dockerfiles for [GAVO DaCHS](http://docs.g-vo.org/DaCHS/).
+This repository contains the dockerfiles for [GAVO DaCHS](http://docs.g-vo.org/DaCHS/).
+You'll find the corresponding images in [chbrandt/dachs Docker repository][4].
 
-[DaCHS][1] is a suite for managing astronomical data publication through Virtual Observatory (VO)
-standards (see [IVOA][2]).
+If you're here by chance and don't really know what [DaCHS][1] is, it is a software
+system for astronomical data publication through the Virtual Observatory (VO)
+standards and protocols (see [IVOA][2]).
+The system (or _suite_) is composed by a Postgres server in the background managed
+by the Dachs server, which interfaces the database to the user.
 
 [1]: http://dachs-doc.readthedocs.io
 [2]: http://www.ivoa.net
 
-The DaCHS software provides data access services after two daemons running in background,
-a DBMS (PostgreSQL) server and the Dachs server itself responsible for the data management
-and user interface.
+
+## Getting started
+
+<div class="alert alert-info">
+  Command-lines that should run from you host system (MacOS, Linux) are prefixed
+  by <code>(host)</code>. And command-lines preceded by <code>(cont)</code> are
+  meant to be run from inside the container.
+</div>
+
+In what follows, we will focus on running [Dachs-on-Docker][4], the containerized
+version of DaCHS; For detailed information on DaCHS itself or Docker, please
+visit their official documentation, [DaCHS/docs][1] or [Docker/docs][5].
+
+The easiest way to have [Dachs-on-Docker][4] running is by simply running the
+Postgres (`chbrandt/dachs:postgres`) container and then the Dachs-server container
+(`chbrandt/dachs:server`):
+```bash
+(host)$ docker run -dt --name postgres chbrandt/dachs:postgres
+(host)$ docker run -dt --name dachs --link postgres -p 80:80 chbrandt/dachs:server
+```
+
+After doing it, we go to <http://localhost> (in our web browser) to see the
+default DaCHS web interface; _DaCHS-on-Docker_ is running.
+
+Now...before going to the next session, let's do a small trick...just because
+we like tricks ;)
+Let's modify the _name of our site_.
+The next commands will modify the content of a Dachs's configuration file, and
+then we will restart `gavo` (the `dachs` daemon):
+```bash
+$ docker exec dachs bash -c 'echo "sitename: Short Site-name" >> $GAVOSETTINGS'
+$ docker exec dachs bash -c 'gavo serve restart'
+```
+
+And now, going back to our browser's <http://localhost> and refresh the page;
+the new title "Short Site-name" (or whatever you decided to use) should be there.
+
+That's quite, now let's put some data in it.
+
+
+### Feeding data: ARIHIP example
+
+We will now adapt the original [example from the DaCHS documentation][example]
+to our container.
+Steps are basically the same, we just have to change the perspective:
+[example]: http://docs.g-vo.org/DaCHS/tutorial.html#building-a-catalog-service
+
+1. Download the ARIHIP RD and data files:
+  ```bash
+  $ mkdir -p arihip/data
+  $ curl http://svn.ari.uni-heidelberg.de/svn/gavo/hdinputs/arihip/q.rd -o arihip/q.rd
+  $ curl http://dc.g-vo.org/arihip/q/cone/static/data.txt.gz -o arihip/data/data.txt.gz
+  ```
+2. Copy the ARIHIP files into the container:
+  ```bash
+  $ docker cp arihip dachs:/var/gavo/inputs/.
+  ```
+3. Import, publish, restart the service:
+  ```bash
+  $ docker exec -it dachs bash -c 'gavo imp arihip/q && gavo pub arihip/q'
+  $ docker exec dachs bash -c 'gavo serve restart'
+  ```
+
+...and the ARIHIP dataset should be available to you at <http://localhost>.
+
+
+#### A note on data persistence
+
+Containers are temporary environments, whatever you do inside a container while
+it is alive will go away with the container when it goes removed.
+
+For instance, in our example, ARIHIP (and the previous modification to `sitename`)
+will evaporate together with the container in case of a restart.
+See it for yourself:
+
+1. Remove the running containers
+  ```bash
+  $ docker rm -f dachs postgres
+  ```
+2. Start the containers as in the [previous subsection](#getting-started)
+3. Check <http://localhost>, the default/empty DaCHS web site is back online.
+
+There are different ways to persist data in Docker containers, it depends
+very much on the surrounding infrastructure, demands through time and even
+the kind of workflow from who manages the data/services.
+
+In the [wiki] -- [Persisting data] -- we workout some models to persist
+datasets throught shutdowns.
+
+[wiki]: https://github.com/chbrandt/docker-dachs/wiki
+[persisting data]: https://github.com/chbrandt/docker-dachs/wiki/Persisting-data
+
+[5]: https://docs.docker.com/
+
+
+## This repository structure
+
+The DaCHS software provides data access services after two daemons running in
+background, a DBMS (PostgreSQL) server and the Dachs server itself responsible
+for the data management and user interface.
 
 The [Github][3] repository has four branches, `master`, `dachs`, `postgres`
 and `all-in-one`. Except from `master` each repository is associated with
@@ -30,37 +138,11 @@ This ([Github][3]) repository offers a `docker-compose.yml` file, which is
 the recommended way of running DaCHS.
 
 
+
+
+
+
 ## How to use it
-
-The recommended way of running DaCHS on Docker is through `docker-compose`.
-`docker-compose.yml` will call `chbrandt/dachs:server` and
-`chbrandt/dachs:postgres` to compose the service accessible through
-`http://localhost` (port 80). The containers are name `dachs` and `postgres`,
-respectively, and each one of them has a data volume associated
-(see [Compose data volumes][compose-data-volumes]).
-
-The [docker-compose file][5] is available at the master branch.
-Suppose you have the [docker-compose.yml][5] in your current directory,
-just type the following command to have the service running:
-```
-$ docker-compose up
-```
-...wait a few seconds and the web interface should show up at `http://localhost`.
-
-*If you want to see further details about running DaCHS on Docker without
-the compose, take a look at [Further ways of running Dachs](#further-ways-of-running-dachs).*
-
-After the service has been started, you can run commands to control
-Dachs through docker's `exec` command.
-For example, to order a `restart` of `dachs` server, we should do:
-```
-$ docker exec -it dachs gavo serve restart
-```
-This command line means:
-* `gavo serve restart`: the command we want to run inside the container
-* `dachs`: the name of the container we want to run the command
-* `docker exec -t`: ask docker to execute the command in a terminal (`-t`)
-
 
 ### Compose data volumes
 

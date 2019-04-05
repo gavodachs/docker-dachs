@@ -5,10 +5,7 @@ Summary
 * [Getting started](#getting-started)
   * [Feeding data: ARIHIP example](#feeding-data--arihip-example)
     * [A note on data persistence](#a-note-on-data-persistence)
-
-
 * [This repository structure](#this-repository-structure)
-*
 * [How to use it](#how-to-use-it)
  * [Compose data volumes](#compose-data-volumes)
  * [Complete workflow example](#complete-workflow-example)
@@ -30,7 +27,9 @@ by the Dachs server, which interfaces the database to the user.
 ## Getting started
 
 ```diff
-+ Command-lines that should run from you host system (MacOS, Linux) are prefixed by <code>(host)</code>. And command-lines preceded by <code>(cont)</code> are meant to be run from inside the container.
++ Command-lines that should run from you host system (MacOS, Linux) are prefixed
++ by <code>(host)</code>. And command-lines preceded by <code>(cont)</code> are
++ meant to be run from inside the container.
 ```
 
 In what follows, we will focus on running [Dachs-on-Docker][4], the containerized
@@ -100,7 +99,7 @@ will evaporate together with the container in case of a restart.
 See it for yourself:
 
 1. Remove the running containers
-  ```bash
+  ```
   $ docker rm -f dachs postgres
   ```
 2. Start the containers as in the [previous subsection](#getting-started)
@@ -119,25 +118,69 @@ datasets throught shutdowns.
 [5]: https://docs.docker.com/
 
 
+## Using Docker Compose
+
+Docker Compose is a clean way of running multiple containers that, like this setup,
+work together to provide a seamless service.
+
+Details about Docker Compose and how to install the `docker-compose` command
+are found in the docs:
+* Overview: <https://docs.docker.com/compose/overview/>
+* Install: <https://docs.docker.com/compose/install/>
+
+Long-story-short, once you have a `docker-compose.yml` file (below), you'll
+have to type as much as,
+```
+$ docker-compose up
+```
+to have you containers running.
+
+A `docker-compose.yml` to do exactly what we've done in the [first section][#getting-started]
+will look like:
+```
+version: '3'
+services:
+    dachs:
+        image: chbrandt/dachs:server
+        container_name: dachs
+        tty: true
+        network_mode: 'bridge'
+        ports:
+            - '80:80'
+        links:
+            - postgres
+        depends_on:
+            - postgres
+    postgres:
+        image: chbrandt/dachs:postgres
+        container_name: postgres
+        tty: true
+        network_mode: 'bridge'
+```
+
+## Next steps: advancing the use of Dachs on Docker
+
+Now that we've done the very first steps, we may start merging the flexibility
+of containers within the structure of Dachs and, as indicated previously, we
+can talk about data persistence, publishing workflow and composing services.
+
+
 ## This repository structure
 
-The DaCHS software provides data access services after two daemons running in
-background, a DBMS (PostgreSQL) server and the Dachs server itself responsible
-for the data management and user interface.
-
-The [Github][3] repository has four branches, `master`, `dachs`, `postgres`
+This [Github][3] repository has four branches, `master`, `dachs`, `postgres`
 and `all-in-one`. Except from `master` each repository is associated with
-a different Docker image, all automatically built at [Docker Hub][4].
+a different Docker image(/tag) -- `chbrandt/dachs`(`:tag`), available at [Docker Hub][4]:
+
+| git branch | docker tag |
+| --- | --- |
+| `dachs` | `server` |
+| `postgres` | `postgres` |
+| `all-in-one` | `latest` |
 
 [3]: https://github.com/chbrandt/docker-dachs
 [4]: https://hub.docker.com/r/chbrandt/dachs/
 
-This ([Github][3]) repository offers a `docker-compose.yml` file, which is
-the recommended way of running DaCHS.
-
-
-
-
+This ([Github][3]) repository offers a `docker-compose.yml` file.
 
 
 ## How to use it

@@ -29,11 +29,9 @@ by the Dachs server, which interfaces the database to the user.
 
 ## Getting started
 
-<div class="alert alert-info">
-  Command-lines that should run from you host system (MacOS, Linux) are prefixed
-  by <code>(host)</code>. And command-lines preceded by <code>(cont)</code> are
-  meant to be run from inside the container.
-</div>
+```diff
++ Command-lines that should run from you host system (MacOS, Linux) are prefixed by <code>(host)</code>. And command-lines preceded by <code>(cont)</code> are meant to be run from inside the container.
+```
 
 In what follows, we will focus on running [Dachs-on-Docker][4], the containerized
 version of DaCHS; For detailed information on DaCHS itself or Docker, please
@@ -42,7 +40,7 @@ visit their official documentation, [DaCHS/docs][1] or [Docker/docs][5].
 The easiest way to have [Dachs-on-Docker][4] running is by simply running the
 Postgres (`chbrandt/dachs:postgres`) container and then the Dachs-server container
 (`chbrandt/dachs:server`):
-```bash
+```
 (host)$ docker run -dt --name postgres chbrandt/dachs:postgres
 (host)$ docker run -dt --name dachs --link postgres -p 80:80 chbrandt/dachs:server
 ```
@@ -55,7 +53,7 @@ we like tricks ;)
 Let's modify the _name of our site_.
 The next commands will modify the content of a Dachs's configuration file, and
 then we will restart `gavo` (the `dachs` daemon):
-```bash
+```
 $ docker exec dachs bash -c 'echo "sitename: Short Site-name" >> $GAVOSETTINGS'
 $ docker exec dachs bash -c 'gavo serve restart'
 ```
@@ -74,17 +72,17 @@ Steps are basically the same, we just have to change the perspective:
 [example]: http://docs.g-vo.org/DaCHS/tutorial.html#building-a-catalog-service
 
 1. Download the ARIHIP RD and data files:
-  ```bash
+  ```
   $ mkdir -p arihip/data
   $ curl http://svn.ari.uni-heidelberg.de/svn/gavo/hdinputs/arihip/q.rd -o arihip/q.rd
   $ curl http://dc.g-vo.org/arihip/q/cone/static/data.txt.gz -o arihip/data/data.txt.gz
   ```
 2. Copy the ARIHIP files into the container:
-  ```bash
+  ```
   $ docker cp arihip dachs:/var/gavo/inputs/.
   ```
 3. Import, publish, restart the service:
-  ```bash
+  ```
   $ docker exec -it dachs bash -c 'gavo imp arihip/q && gavo pub arihip/q'
   $ docker exec dachs bash -c 'gavo serve restart'
   ```

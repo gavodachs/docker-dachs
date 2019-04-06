@@ -1,15 +1,13 @@
 # DaCHS on Docker
 
-Summary
-
 * [Getting started](#getting-started)
   * [Feeding data: ARIHIP example](#feeding-data--arihip-example)
     * [A note on data persistence](#a-note-on-data-persistence)
+* [Using Docker Compose](#using-docker-compose)
+* [Customizing Dachs-on-Docker](#customizing-dachs-on-docker)
+* [Best practices and surroundings](#best-practices-and-surroundings)
 * [This repository structure](#this-repository-structure)
-* [How to use it](#how-to-use-it)
- * [Compose data volumes](#compose-data-volumes)
- * [Complete workflow example](#complete-workflow-example)
-* [Further ways of running Dachs](#further-ways-of-running-dachs)
+* [Debugging things](#debugging-things)
 
 This repository contains the dockerfiles for [GAVO DaCHS](http://docs.g-vo.org/DaCHS/).
 You'll find the corresponding images in [chbrandt/dachs Docker repository][4].
@@ -97,8 +95,8 @@ Steps are basically the same, we just have to change the perspective:
 
 #### A note on data persistence
 
-Containers are temporary environments, whatever you do inside a container while
-it is alive will go away with the container when it goes removed.
+Containers are volatile environments: whatever you do inside a container while
+it is alive will go away when it is removed.
 
 For instance, in our example, ARIHIP (and the previous modification to `sitename`)
 will evaporate together with the container in case of a restart.
@@ -164,11 +162,69 @@ services:
         network_mode: 'bridge'
 ```
 
-## Next steps: advancing the use of Dachs on Docker
+## Customizing Dachs-on-Docker
 
-Now that we've done the very first steps, we may start merging the flexibility
+Docker containers have an _inheritance_ mechanism in place that enables the
+specialization of _base images_ to different applications.
+_Dachs-on-Docker_ is meant to be inherited and further customized.
+
+As far as I understand, you will likely want to customize `dachs:server` image,
+where the interface with the user and data management takes place.
+
+One aspect that you probably want to adjust is your site's metadata (_e.g._,
+title, URL).
+Which is about time now that we've gone through the very basics.
+
+In the very first section, "Getting started", we changed the name of the our
+site to "Short Site-name" through `docker exec`.
+Now, we want to make that modification, for instance, as part of a _custom_
+container.
+
+The guidelines are:
+* To _build_ a container we need to define a `Dockerfile`;
+* We want to define our own DaCHS' `gavo.rc`;
+  * In the `Dockerfile`, `gavo.rc` will substitute the default one.
+
+**First of all**, in an empty directory define the following `Dockerfile`:
+```
+FROM chbrandt/dachs:server
+COPY etc/gavo.rc /etc/gavo.rc
+```
+
+**Then**, define your site's metadata in `etc/gavo.rc`. For example:
+```
+$ mkdir etc
+$ cat > etc/gavo.rc << EOF
+[web]
+sitename: Short Site-name
+bindAddress:
+serverPort: 80
+serverURL: http://localhost
+EOF
+```
+
+In your current directory, you should have:
+```
+Dockerfile
+etc/
+`- gavo.rc
+```
+
+**Build** your custom image:
+```
+$ docker build -t mydachs:server .
+```
+
+There you go; Whenever there was `chbrandt/dachs:server` (in the previous
+commands), you should now use `mydachs:server`.
+Yes, I agree, this is pretty cool -- and I'd like to add: hats off for both,
+Docker and Dachs, for keeping things tight ;)
+
+## Best practices and surroundings
+
+Now that we covered the first steps, we may go further on merging the flexibility
 of containers within the structure of Dachs and, as indicated previously, we
-can talk about data persistence, publishing workflow and composing services.
+talk about data persistence, publishing workflow and composing services.
 
 
 ## This repository structure

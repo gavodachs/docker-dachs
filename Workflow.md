@@ -63,6 +63,42 @@ $ cd /var/gavo/inputs
 $ git clone <url>
 ```
 
-In this workflow we avoid directly copy files, a separated _repository_
+In this workflow we avoid directly copying files, a separated _repository_
 simplifies the bi-directional synchronization of the files, and we win
 quite a reliable backup in the meantime :)
+
+
+## Mounting working directory to containers
+
+I like to see the development process of a (Dachs) service as composed by one of
+more cycles of "_feature implementation_ > _test_ > _fix eventual error_ > _test_".
+Actually, to support this cycle was the primary motivation for _DaCHS-on-Docker_:
+to have an efficient "sandbox" so that I could simply dump my
+environment and start from fresh.
+
+During this process, it is reasonable to have the current _service_ directory
+shared between _host_ and the _dachs_ container, it allows one to edit RD/data
+files using editor/tools from the host system while -- whenever necessary to _test_ --
+`gavo imp/pub/...` is promptly available through the container.
+
+To do so, we'll use docker's option `--volume|-v`.
+
+Let's say our previous service example ("Dataset-X") is under '`/data/datasetx/`',
+we can run our container like,
+```
+# Docker-run the 'postgres' container previously, and then...
+#
+(host)$ docker run -dt --rm --name dachs_datasetx -p 80:80 \
+                   -v /data/datasetx:/var/gavo/inputs/datasetx \
+                   chbrandt/dachs:server
+```
+
+And whenever the service is good to try,
+```
+(host)$ docker exec -it dachs_datasetx bash
+(cont)$ gavo imp datasetx/q
+(cont)$ gavo pub datasetx/q
+```
+
+At any given moment, `dachs_datasetx` container can be stoped and even removed.
+Files under `/data/datasetx/` will staty there. as any other file in the filesystem.

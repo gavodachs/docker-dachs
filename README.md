@@ -1,10 +1,10 @@
 # DaCHS on Docker
 
 * [Getting started](#getting-started)
-  * [Feeding data: ARIHIP example](#feeding-data--arihip-example)
+  * [Feeding data: ARIHIP](#feeding-data--arihip-example)
     * [A note on data persistence](#a-note-on-data-persistence)
 * [Using Docker Compose](#using-docker-compose)
-* [Customizing Dachs-on-Docker](#customizing-dachs-on-docker)
+* [FROM `dachs:server`](#from-dachs-server)
 * [Best practices and surroundings](#best-practices-and-surroundings)
 * [This repository structure](#this-repository-structure)
 * [Debugging things](#debugging-things)
@@ -162,7 +162,7 @@ services:
         network_mode: 'bridge'
 ```
 
-## Customizing Dachs-on-Docker
+## FROM `dachs:server`
 
 Docker containers have an _inheritance_ mechanism in place that enables the
 specialization of _base images_ to different applications.
@@ -177,21 +177,21 @@ Which is about time now that we've gone through the very basics.
 
 In the very first section, "Getting started", we changed the name of the our
 site to "Short Site-name" through `docker exec`.
-Now, we want to make that modification, for instance, as part of a _custom_
+Now, we want to make that modification, for example, as part of a _custom_
 container.
 
 The guidelines are:
 * To _build_ a container we need to define a `Dockerfile`;
-* We want to define our own DaCHS' `gavo.rc`;
-  * In the `Dockerfile`, `gavo.rc` will substitute the default one.
+* We will define our own DaCHS' `gavo.rc`;
+  * And in the `Dockerfile`, substitute the default `gavo.rc`.
 
-**First of all**, in an empty directory define the following `Dockerfile`:
+**We start** in an empty directory, by defining the following `Dockerfile`:
 ```
 FROM chbrandt/dachs:server
 COPY etc/gavo.rc /etc/gavo.rc
 ```
 
-**Then**, define your site's metadata in `etc/gavo.rc`. For example:
+**Then**, we define the site's metadata (in `etc/gavo.rc`):
 ```
 $ mkdir etc
 $ cat > etc/gavo.rc << EOF
@@ -203,46 +203,29 @@ serverURL: http://localhost
 EOF
 ```
 
-In your current directory, you should have:
+---
+* *Note:* the current directory has (currently) the files:
+```diff
++ Dockerfile
++ etc/
++ `- gavo.rc
 ```
-Dockerfile
-etc/
-`- gavo.rc
+---
+
+**Build** docker image:
+```
+$ docker build -t mydachs:server ./
 ```
 
-**Build** your custom image:
-```
-$ docker build -t mydachs:server .
-```
-
-There you go; Whenever there was `chbrandt/dachs:server` (in the previous
-commands), you should now use `mydachs:server`.
-Yes, I agree, this is pretty cool -- and I'd like to add: hats off for both,
-Docker and Dachs, for keeping things tight ;)
-
-## Best practices and surroundings
-
-Now that we covered the first steps, we may go further on merging the flexibility
-of containers within the structure of Dachs and, as indicated previously, we
-talk about data persistence, publishing workflow and composing services.
+There you go; Previously, we used `chbrandt/dachs:server`, now, `mydachs:server`
+should do the work.
 
 
-## This repository structure
-
-This [Github][3] repository has four branches, `master`, `dachs`, `postgres`
-and `all-in-one`. Except from `master` each repository is associated with
-a different Docker image(/tag) -- `chbrandt/dachs`(`:tag`), available at [Docker Hub][4]:
-
-| git branch | docker tag |
-| --- | --- |
-| `dachs` | `server` |
-| `postgres` | `postgres` |
-| `all-in-one` | `latest` |
-
-[3]: https://github.com/chbrandt/docker-dachs
-[4]: https://hub.docker.com/r/chbrandt/dachs/
-
-This ([Github][3]) repository offers a `docker-compose.yml` file.
+## ~Best practices
+Now that we covered the first steps, we may go further on merging
+containers within the structure of Dachs:
+* <a href='./Data_Persistence.md'>_Data persistence_</a>
+* <a href='./Workflow.md'>_Workflow_</a>
 
 
 ## Debugging things
@@ -271,7 +254,24 @@ it's usually a good idea to see what's going on:
 (host)$ docker run --rm -it --name dachs --link postgres -p 80:80 dachs_dachs
 ```
 
+## This repository structure
+
+This [Github][3] repository has four branches, `master`, `dachs`, `postgres`
+and `all-in-one`. Except from `master` each repository is associated with
+a different Docker image(/tag) -- `chbrandt/dachs`(`:tag`), available at [Docker Hub][4]:
+
+| git branch | docker tag |
+| --- | --- |
+| `dachs` | `server` |
+| `postgres` | `postgres` |
+| `all-in-one` | `latest` |
+
+[3]: https://github.com/chbrandt/docker-dachs
+[4]: https://hub.docker.com/r/chbrandt/dachs/
+
+This ([Github][3]) repository offers a `docker-compose.yml` file.
+
+
 _Any doubt, comment or error, please file an [issue on Github](https://github.com/chbrandt/docker-dachs/issues)_
 
 /.\
-Carlos

@@ -10,13 +10,17 @@
 * [Debugging things](#debugging-things)
 
 This repository contains the dockerfiles for [GAVO DaCHS](http://docs.g-vo.org/DaCHS/).
-You'll find the corresponding images in [chbrandt/dachs Docker repository][4].
+You'll find the corresponding images in ['chbrandt/dachs' Docker repository][4].
+The system (or _suite_) is composed by a Postgres server in the background managed
+by the Dachs server which interfaces the database to the user.
+
+* `chbrandt/dachs:server`: the DaCHS data-manager/server suite
+* `chbrandt/dachs:postgres`: the Postgres db used by DaCHS
+* `chbrandt/dachs`: DaCHS server + Postgres db -- used for testing only
 
 If you're here by chance and don't really know what [DaCHS][1] is, it is a software
 system for astronomical data publication through the Virtual Observatory (VO)
 standards and protocols (see [IVOA][2]).
-The system (or _suite_) is composed by a Postgres server in the background managed
-by the Dachs server, which interfaces the database to the user.
 
 [1]: http://dachs-doc.readthedocs.io
 [2]: http://www.ivoa.net
@@ -24,13 +28,11 @@ by the Dachs server, which interfaces the database to the user.
 
 ## Getting started
 
-```diff
-+ Command-lines that should run from you host system (MacOS, Linux) are prefixed
-+ by <code>(host)</code>. And command-lines preceded by <code>(cont)</code> are
-+ meant to be run from inside the container.
-```
+> Command-lines that should run from you host system (MacOS, Linux) are prefixed
+> by <code>(host)</code>. And command-lines preceded by <code>(cont)</code> are
+> meant to be run from inside the container.
 
-In what follows, we will focus on running [Dachs-on-Docker][4], the containerized
+In this document we'll see how to run [Dachs-on-Docker][4], the containerized
 version of DaCHS; For detailed information on DaCHS itself or Docker, please
 visit their official documentation, [DaCHS/docs][1] or [Docker/docs][5].
 
@@ -42,12 +44,17 @@ Postgres (`chbrandt/dachs:postgres`) container and then the Dachs-server contain
 (host)$ docker run -dt --name dachs --link postgres -p 80:80 chbrandt/dachs:server
 ```
 
-After doing it, we go to <http://localhost> (in our web browser) to see the
-default DaCHS web interface; _DaCHS-on-Docker_ is running.
+After those lines, go to <http://localhost> (in the web browser) to see the
+default DaCHS web interface.
+_DaCHS-on-Docker_ is running.
 
-Now...before going to the next session, let's do a small trick...just because
-we like tricks ;)
+Surely, there is no data in there, in the next section we'll go through an
+example of how to feed it a dataset.
+
+But before going to the next session, let's just handle for a moment the Docker
+command-line interface to change the state of DaCHS .
 Let's modify the _name of our site_.
+
 The next commands will modify the content of a Dachs's configuration file, and
 then we will restart `gavo` (the `dachs` daemon):
 ```
@@ -55,15 +62,14 @@ $ docker exec dachs bash -c 'echo "sitename: Short Site-name" >> $GAVOSETTINGS'
 $ docker exec dachs bash -c 'gavo serve restart'
 ```
 
-And now, going back to our browser's <http://localhost> and refresh the page;
-the new title "Short Site-name" (or whatever you decided to use) should be there.
+Now, going back to our browser's <http://localhost> (possibly refresh the page),
+we should see the new title "Short Site-name".
 
-That's quite cute, now let's put some data in it.
+That's quite cute, isn't it? Now let's put some data in it.
 
 ---
 * *Note-1:* the `postgres` container _must_ be named "*postgres*".
 * *Note-2:* the `server` container exposes port "*80*".
-* *OBS:* the lines below call `dachs:data` just as an example on adding data volumes.
 ---
 
 

@@ -1,5 +1,9 @@
 # DaCHS on Docker
 
+First things first: if you have _suggestions or problems_ when running Dachs-on-Docker,
+please file an [issue on Github](https://github.com/chbrandt/docker-dachs/issues).
+
+
 * [Getting started](#getting-started)
   * [Feeding data: ARIHIP](#feeding-data--arihip-example)
     * [A note on data persistence](#a-note-on-data-persistence)
@@ -46,11 +50,9 @@ Postgres (`chbrandt/dachs:postgres`) container and then the Dachs-server contain
 
 After those lines, go to <http://localhost> (in the web browser) to see the
 default DaCHS web interface.
-_DaCHS-on-Docker_ is running.
-
+**_DaCHS-on-Docker_ is running**.
 Surely, there is no data in there, in the next section we'll go through an
 example of how to feed it a dataset.
-
 But before going to the next session, let's just handle for a moment the Docker
 command-line interface to change the state of DaCHS .
 Let's modify the _name of our site_.
@@ -96,7 +98,7 @@ Steps are basically the same, we just have to change the perspective:
   $ docker exec dachs bash -c 'gavo serve restart'
   ```
 
-...and the ARIHIP dataset should be available to you at <http://localhost>.
+...and the ARIHIP dataset should be available at <http://localhost>.
 
 
 #### A note on data persistence
@@ -209,14 +211,12 @@ serverURL: http://localhost
 EOF
 ```
 
----
 * *Note:* the current directory has (currently) the files:
-```diff
-+ Dockerfile
-+ etc/
-+ `- gavo.rc
 ```
----
+Dockerfile
+etc/
+`- gavo.rc
+```
 
 **Build** docker image:
 ```
@@ -229,7 +229,7 @@ should do the work.
 
 ## ~Best practices
 Now that we covered the first steps, we may go further on merging
-containers within the structure of Dachs:
+containers with the structure of Dachs:
 * <a href='./Data_Persistence.md'>_Data persistence_</a>
 * <a href='./Workflow.md'>_Workflow_</a>
 
@@ -277,7 +277,5 @@ a different Docker image(/tag) -- `chbrandt/dachs`(`:tag`), available at [Docker
 
 This ([Github][3]) repository offers a `docker-compose.yml` file.
 
-
-_Any doubt, comment or error, please file an [issue on Github](https://github.com/chbrandt/docker-dachs/issues)_
 
 /.\

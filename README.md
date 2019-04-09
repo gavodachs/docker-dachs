@@ -24,12 +24,12 @@ by the Dachs server which interfaces the database to the user.
 * `chbrandt/dachs:postgres`: the Postgres db used by DaCHS
 * `chbrandt/dachs`: DaCHS server + Postgres db -- used for testing only
 
-If you're here by chance and don't really know what [DaCHS][1] is, it is a software
-system for astronomical data publication through the Virtual Observatory (VO)
-standards and protocols (see [IVOA][2]).
+In this document we'll see how to run [Dachs-on-Docker][4], the containerized
+version of DaCHS.
+For detailed information on DaCHS itself or Docker, please
+visit their official documentation, [DaCHS/docs][1] or [Docker/docs][5].
 
 [1]: http://dachs-doc.readthedocs.io
-[2]: http://www.ivoa.net
 
 
 ## Getting started
@@ -38,10 +38,6 @@ standards and protocols (see [IVOA][2]).
 > by <code>(host)</code>. And command-lines preceded by <code>(cont)</code> are
 > meant to be run from inside the container.
 
-In this document we'll see how to run [Dachs-on-Docker][4], the containerized
-version of DaCHS; For detailed information on DaCHS itself or Docker, please
-visit their official documentation, [DaCHS/docs][1] or [Docker/docs][5].
-
 The easiest way to have [Dachs-on-Docker][4] running is by simply running the
 Postgres (`chbrandt/dachs:postgres`) container and then the Dachs-server container
 (`chbrandt/dachs:server`):
@@ -49,32 +45,28 @@ Postgres (`chbrandt/dachs:postgres`) container and then the Dachs-server contain
 (host)$ docker run -dt --name postgres chbrandt/dachs:postgres
 (host)$ docker run -dt --name dachs --link postgres -p 80:80 chbrandt/dachs:server
 ```
+> *Note:* the `postgres` container _must_ be named "`postgres`" when running it.
 
 After those lines, go to <http://localhost> (in the web browser) to see the
 default DaCHS web interface.
-**_DaCHS-on-Docker_ is running**.
-Surely, there is no data in there, in the next section we'll go through an
-example of how to feed it a dataset.
-But before going to the next session, let's just handle for a moment the Docker
-command-line interface to change the state of DaCHS .
-Let's modify the _name of our site_.
 
-The next commands will modify the content of a Dachs's configuration file, and
-then we will restart `gavo` (the `dachs` daemon):
+**_DaCHS-on-Docker_ is running**.
+
+Before going to the next session -- where we'll add some data to it, let's just handle 
+for a moment the Docker command-line interface to change the state of DaCHS.
+
+Let's modify the _name of our site_.
+We will do that by adding the respective parameter to dachs' configuration file, and
+then restart `gavo` (the `dachs` daemon):
 ```
 $ docker exec dachs bash -c 'echo "sitename: Short Site-name" >> $GAVOSETTINGS'
 $ docker exec dachs bash -c 'gavo serve restart'
 ```
 
-Now, going back to our browser's <http://localhost> (possibly refresh the page),
+Going back to the browser's <http://localhost> (possibly refresh the page),
 we should see the new title "Short Site-name".
 
 That's quite cute, isn't it? Now let's put some data in it.
-
----
-* *Note-1:* the `postgres` container _must_ be named "*postgres*".
-* *Note-2:* the `server` container exposes port "*80*".
----
 
 
 ### Feeding data: ARIHIP example

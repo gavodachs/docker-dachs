@@ -1,7 +1,7 @@
 # DaCHS on Docker
 
-First things first: if you have _suggestions or problems_ when running Dachs-on-Docker,
-please file an [issue on Github](https://github.com/chbrandt/docker-dachs/issues).
+> If you have _suggestions or issues_ on running Dachs-on-Docker,
+consider filling an [issue on Github](https://github.com/chbrandt/docker-dachs/issues).
 
 
 * [Getting started](#getting-started)

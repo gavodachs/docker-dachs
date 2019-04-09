@@ -74,6 +74,7 @@ That's quite cute, isn't it? Now let's put some data in it.
 We will now adapt the original [example from the DaCHS documentation][example]
 to our container.
 Steps are basically the same, we just have to change the perspective:
+
 [example]: http://docs.g-vo.org/DaCHS/tutorial.html#building-a-catalog-service
 
 1. Download the ARIHIP RD and data files:

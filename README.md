@@ -3,15 +3,17 @@
 > If you have _suggestions or issues_ on running Dachs-on-Docker,
 consider filling an [issue on Github](https://github.com/chbrandt/docker-dachs/issues).
 
-
+**TOC**
 * [Getting started](#getting-started)
-  * [Feeding data: ARIHIP](#feeding-data--arihip-example)
+  * [Feeding data: ARIHIP](#feeding-data-arihip-example)
     * [A note on data persistence](#a-note-on-data-persistence)
 * [Using Docker Compose](#using-docker-compose)
-* [FROM `dachs:server`](#from-dachs-server)
-* [Best practices and surroundings](#best-practices-and-surroundings)
+* [FROM `dachs:server`](#from-dachsserver)
+* [~Best practices](#best-practices)
 * [This repository structure](#this-repository-structure)
 * [Debugging things](#debugging-things)
+
+---
 
 This repository contains the dockerfiles for [GAVO DaCHS](http://docs.g-vo.org/DaCHS/).
 You'll find the corresponding images in ['chbrandt/dachs' Docker repository][4].

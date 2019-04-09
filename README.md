@@ -24,18 +24,18 @@ by the Dachs server which interfaces the database to the user.
 * `chbrandt/dachs:postgres`: the Postgres db used by DaCHS
 * `chbrandt/dachs`: DaCHS server + Postgres db -- used for testing only
 
-In this document we'll see how to run [Dachs-on-Docker][4], the containerized
-version of DaCHS.
-For detailed information on DaCHS itself or Docker, please
-visit their official documentation, [DaCHS/docs][1] or [Docker/docs][5].
+> In this document we'll see how to run [Dachs-on-Docker][4], the containerized
+> version of DaCHS.
+> For detailed information on DaCHS itself or Docker, please
+> visit their official documentation, [DaCHS/docs][1] or [Docker/docs][5].
+> 
+> Command-lines running from the _host_ system are prefixed by <code>(host)</code>.
+> And command-lines preceeded by <code>(cont)</code> are run from inside the container.
 
 [1]: http://dachs-doc.readthedocs.io
 
 
 ## Getting started
-
-> Command-lines running from the _host_ system are prefixed by <code>(host)</code>.
-> And command-lines preceeded by <code>(cont)</code> are run from inside the container.
 
 [Dachs-on-Docker][4] is a combination of two services/containers, a Postgres
 (`chbrandt/dachs:postgres`) db/container and the Dachs server/container
@@ -47,7 +47,7 @@ visit their official documentation, [DaCHS/docs][1] or [Docker/docs][5].
 After those lines, go to <http://localhost> (in the web browser) to see the
 default DaCHS web interface.
 
-**_DaCHS-on-Docker_ is running**.
+_DaCHS-on-Docker_ is running.
 
 > *Note:* the `postgres` container _must_ be named "`postgres`" when running it.
 

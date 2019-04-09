@@ -1,9 +1,6 @@
 # DaCHS on Docker
 
-> If you have _suggestions or issues_ on running Dachs-on-Docker,
-consider filling an [issue on Github](https://github.com/chbrandt/docker-dachs/issues).
-
-**TOC**
+**ToC**
 * [Getting started](#getting-started)
   * [Feeding data: ARIHIP](#feeding-data-arihip-example)
     * [A note on data persistence](#a-note-on-data-persistence)
@@ -12,6 +9,9 @@ consider filling an [issue on Github](https://github.com/chbrandt/docker-dachs/i
 * [~Best practices](#best-practices)
 * [This repository structure](#this-repository-structure)
 * [Debugging things](#debugging-things)
+
+> If you have _suggestions or issues_ on running Dachs-on-Docker,
+consider filling an [issue on Github](https://github.com/chbrandt/docker-dachs/issues).
 
 ---
 

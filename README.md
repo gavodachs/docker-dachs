@@ -230,8 +230,8 @@ should do the work.
 ## ~Best practices
 Now that we covered the first steps, we may go further on merging
 containers with the structure of Dachs:
-* <a href='./Data_Persistence.md'>_Data persistence_</a>
-* <a href='./Workflow.md'>_Workflow_</a>
+* <a href='./_Data_Persistence.md'>_Data persistence_</a>
+* <a href='./_Workflow.md'>_Workflow_</a>
 
 
 ## Debugging things

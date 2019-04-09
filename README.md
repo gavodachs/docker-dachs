@@ -34,28 +34,28 @@ visit their official documentation, [DaCHS/docs][1] or [Docker/docs][5].
 
 ## Getting started
 
-> Command-lines that should run from you host system (MacOS, Linux) are prefixed
-> by <code>(host)</code>. And command-lines preceded by <code>(cont)</code> are
-> meant to be run from inside the container.
+> Command-lines running from the _host_ system are prefixed by <code>(host)</code>.
+> And command-lines preceeded by <code>(cont)</code> are run from inside the container.
 
-The easiest way to have [Dachs-on-Docker][4] running is by simply running the
-Postgres (`chbrandt/dachs:postgres`) container and then the Dachs-server container
+[Dachs-on-Docker][4] is a combination of two services/containers, a Postgres
+(`chbrandt/dachs:postgres`) db/container and the Dachs server/container
 (`chbrandt/dachs:server`):
 ```
 (host)$ docker run -dt --name postgres chbrandt/dachs:postgres
 (host)$ docker run -dt --name dachs --link postgres -p 80:80 chbrandt/dachs:server
 ```
-> *Note:* the `postgres` container _must_ be named "`postgres`" when running it.
-
 After those lines, go to <http://localhost> (in the web browser) to see the
 default DaCHS web interface.
 
 **_DaCHS-on-Docker_ is running**.
 
-Before going to the next session -- where we'll add some data to it, let's just handle 
-for a moment the Docker command-line interface to change the state of DaCHS.
+> *Note:* the `postgres` container _must_ be named "`postgres`" when running it.
 
-Let's modify the _name of our site_.
+Cool.
+Before going to the next session -- where we'll add some data to it--, let's first
+handle for a moment the Docker command-line interface to change the state of DaCHS.
+
+Let's modify our site's _title_.
 We will do that by adding the respective parameter to dachs' configuration file, and
 then restart `gavo` (the `dachs` daemon):
 ```

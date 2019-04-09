@@ -5,18 +5,15 @@ modified _inside_ the container's (virtual) filesystem will be deleted.
 Clearly, we need to workout a setup where data and settings
 remain safe -- _persist_ -- across container shutdowns/upgrades.
 
-Docker _volumes_ is a central concept to this argument as volumes are essentially
+Docker _volumes_ is a central concept to this argument, volumes are essentially
 mounting points between the host and the container or among containers.
 Through _volumes_ we can
 * either keep the data in the host and share them with the container,
 * or dedicate a container for the storage and serve it to other container(s).
-Again, the best strategy depends very much each data provider's workflow and
+The best strategy depends very much on each data provider's workflow and the
 amount of data.
-
-Notice that we are not particularly talking about your Dachs' site settings,
-although clearly the arguments of data persistence apply also to those files.
-I understand that site settings are likely to be persistet through a customized
-_dachs-server_ image, but this is just a personal taking, not necessarily your case.
+Anyways, we will here (together with the <a href='./_Workflow.md'>_Workflow_</a>
+document) handle a couple of examples on the subject.
 
 Generally, when we think about data to persist across Dachs instances, we think
 on the contents of:
@@ -24,10 +21,10 @@ on the contents of:
 * `/var/gavo`: _almost completely_ defines the site;
 * `/etc/gavo.rc`: site's metadata.
 
-And persisting the data of all those directories, and how is up to you, I'll
-here present a couple of examples to illustrate the mechanism.
-Take the chance to read also the companing document ["Workflow"] for it has
-quite a synergy with the content in here.
+Site's metadata, though, is something rather stable -- actually, _static_ -- in
+every site.
+For that component, it may be reasonable to have it in a custom container after
+inheriting from `chbrandt/dachs:server` like shown in the [README, 'FROM dachs:server' section](README#from-dachsserver).
 
 
 ## Host-Container volumes

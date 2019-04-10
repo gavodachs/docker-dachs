@@ -66,7 +66,8 @@ For example, I have a "`utils`" directory with scripts I use on a daily basis
 for administrative tasks, among them the DaCHS data/services management.
 I usually bring my "`utils`" tools with me inside a container:
 ```
-# Docker-run the 'postgres' container previously, and then...
+# Run the 'postgres' container and then..
+#
 (host)$ docker run -dt --name dachs -p 80:80                         \
                    -v /dachs/sets/arihip:/var/gavo/inputs/arihip     \
                    -v /dachs/sets/datasetx:/var/gavo/inputs/datasetx \
@@ -74,11 +75,11 @@ I usually bring my "`utils`" tools with me inside a container:
                    -v /dachs/etc/gavo.rc:/etc/gavo.rc:ro             \
                    chbrandt/dachs:server
 ```
-Notice that in this example I also mounted the site's metadata (`/etc/gavo.rc`),
-with an extra parameter: "`:ro`" -- in _read-only_ mode.
-By default, volumes are mounted in _read-write_ mode, which means that files/directories
-can be modified (either from inside the container or from by the host).
-The "read-only" flag will block edition from inside the container.
+> Notice that in this example I also mounted the site's metadata (`/etc/gavo.rc`),
+> with an extra parameter: "`:ro`" -- in _read-only_ mode.
+> By default, volumes are mounted in _read-write_ mode, which means that files/directories
+> can be modified (either from inside the container or from by the host).
+> The "read-only" flag will block edition from inside the container.
 
 
 ## Volume Containers

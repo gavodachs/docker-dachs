@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:jessie
 
 LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
       Author=Markus\ Demleitner \
@@ -7,17 +7,17 @@ LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ O
 
 MAINTAINER "Carlos Brandt <carloshenriquebrandt at gmail>"
 
-ENV PG_VERSION 9.6
+ENV PG_VERSION=9.4
 
-RUN DEBIAN_FRONTEND='noninteractive'               && \
-    apt-get update                                 && \
+RUN DEBIAN_FRONTEND='noninteractive'                    && \
+    apt-get update                                      && \
     apt-get install -y sudo wget vim locales git gnupg  && \
     apt-get clean
 
 ENV LANG C.UTF-8
 RUN echo LANG="$LANG" > /etc/default/locale
 
-RUN echo 'deb http://vo.ari.uni-heidelberg.de/debian release main'  \
+RUN echo 'deb http://vo.ari.uni-heidelberg.de/debian stable main'     \
         > /etc/apt/sources.list.d/gavo.list                         && \
     wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
 

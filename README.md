@@ -28,7 +28,7 @@ by the Dachs server which interfaces the database to the user.
 > version of DaCHS.
 > For detailed information on DaCHS itself or Docker, please
 > visit their official documentation, [DaCHS/docs][1] or [Docker/docs][5].
-> 
+>
 > Command-lines running from the _host_ system are prefixed by <code>(host)</code>.
 > And command-lines preceeded by <code>(cont)</code> are run from inside the container.
 
@@ -87,10 +87,10 @@ Steps are basically the same, we just have to change the perspective:
   ```
   $ docker cp arihip dachs:/var/gavo/inputs/.
   ```
-3. Import, publish, restart the service:
+3. Import, publish, reload the service:
   ```
   $ docker exec -it dachs bash -c 'gavo imp arihip/q && gavo pub arihip/q'
-  $ docker exec dachs bash -c 'gavo serve restart'
+  $ docker exec dachs bash -c 'gavo serve reload'
   ```
 
 ...and the ARIHIP dataset should be available at <http://localhost>.

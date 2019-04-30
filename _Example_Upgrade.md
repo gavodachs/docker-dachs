@@ -46,3 +46,38 @@ data sets (if not, please let us know).
   <img src="images/unnamed_arihip.png" alt="ARIHIP example"
     height="400px" border="2px" align="middle"/>
 </div>
+
+
+## Detach data from the Dachs container
+
+What we want to do now is to detach the data from the dachs container.
+But when the container is running we cannot associate volumes to it.
+To do so we have to stop first stop the container and then restart it with the
+associated volume.
+
+* Save the current container state:
+```bash
+(host)$ docker commit --pause dachs dachs_arihip:tmp
+(host)$ docker stop dachs
+(host)$ docker rm dachs
+(host)$ docker volume create dachs_data
+(host)$ docker run -dt --name dachs --link postgres -p 80:80 \
+        --volume dachs_data:/var/gavo/inputs dachs_arihip:tmp
+```
+
+At this point, the service should be running just like before.
+In fact, if we go to http://localhost we will/should see DaCHS web page, and the
+ARIHIP dataset published.
+
+I feel like two notes are worth making now:
+
+> What happened when we included the `dachs_data` volume was that the data in
+> `/var/gavo/inputs` was copied to the (then empty) volume. This was transparent
+> to us, and it is so by design (https://docs.docker.com/storage/volumes/#populate-a-volume-using-a-container).
+
+> The same scenario could have been reached from the beginning by using a
+> "dachs_data" volume when we first started the `dachs` container in section
+> [#Dachs-v0.9.6], and then importing the (ARIHIP) data. We did split the
+> workflow here to present a common case where users will indeed have datasets
+> already inside the (one) container before realizing their data is inprisoned
+> inside it.

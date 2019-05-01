@@ -92,10 +92,53 @@ ARIHIP dataset published.
 
 Before upgrading our setup, we [better check if everything is fine][Upgrading DaCHS]:
 ```bash
-(host)$ gavo val -c ALL
+(host)$ docker exec dachs bash -c 'gavo val -c ALL'
+** WARNING: RD __system__/tests: resource directory '/var/gavo/inputs/__tests' does not exist
+** WARNING: RD __system__/run: resource directory '/var/gavo/inputs/__tests' does not exist
 ```
-From where we should see no errors.
+From where we should see no errors. _Warnings_ are OK to have.
 
+
+## Dachs v1.2
+
+```bash
+(host)$ docker run -dt --name dachs_new --link postgres -p 8080:80 \
+                   --volume dachs_data:/var/gavo/inputs chbrandt/dachs:server-1.2
+(host)$ docker stop dachs_tmp
+(host)$ docker exec -it dachs_new bash
+```
+
+And then, from inside the new container:
+```bash
+(dachs_new)$ gavo serve stop
+(dachs_new)$ gavo upgrade
+```
+
+ERROR:
+```
+> upgrade ivoa.obscore to obscore 1.1.
+		...PythonScriptRunner excecuting script update all obscore definitions
+Starting ivoa.emptyobscore
+Done ivoa.emptyobscore, read 0
+Starting dummy
+Done dummy, read 0
+Making dependent __system__/obscore#create
+PythonScriptRunner excecuting script create obscore view
+Making dependent __system__/obscore#create
+PythonScriptRunner excecuting script create obscore view
+ ok
+> update schemaversion to 13... ok
+ ok
+> Adding column_index column to TAP_SCHEMA.columns"
+		... ok
+> ingesting column_index for TAP-published tables....*X*X* Uncaught exception at toplevel
+*** Error: Oops.  Unhandled exception ProgrammingError.
+
+Exception payload: column "arraysize" of relation "columns" does not
+exist LINE 1: ...mn_name, description, unit, ucd, utype, datatype,
+arraysize,...
+                                                             ^
+```
 
 
 

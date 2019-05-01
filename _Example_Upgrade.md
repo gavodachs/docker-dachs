@@ -9,15 +9,19 @@ on the publishing services, persisting the data and minimizing the downtime.
 > satisfied by those documents and if something remains unclear, let us know.
 
 Here we will
-* start from the ARIHIP example using DaCHS v0.9.6,
+* start from the ARIHIP example using DaCHS v0.9.6<sup>*</sup>,
 * then detach the data from the main container,
 * upgrade the Postgres database to v9.6,
 * upgrade the Dachs server to v1.2,
 * finally, check services.
 
-> DaCHS version `v0.9.6` is going to be used because effectively that was the
-> version _Dachs-on-Docker_ (DoD) started, and remained there until recently when
-> people started using it and asked for updates -- when DoD jumped to `v1.2`.
+> As always, this tutorial does _not_ substitute the official GAVO/DaCHS
+> documentation, it is complementary to the Docker application.
+> In particular, the upgrade process of DaCHS (and Postgres) is covered
+> by the documents at '[Upgrading DaCHS]' (and '[upgrading db engine]').
+
+[Upgrading DaCHS]: http://docs.g-vo.org/DaCHS/opguide.html#upgrading-dachs
+[upgrading db engine]: http://docs.g-vo.org/DaCHS/howDoI.html#upgrade-the-database-engine
 
 ## Dachs v0.9.6
 
@@ -59,25 +63,45 @@ associated volume.
 ```bash
 (host)$ docker commit --pause dachs dachs_arihip:tmp
 (host)$ docker stop dachs
-(host)$ docker rm dachs
 (host)$ docker volume create dachs_data
-(host)$ docker run -dt --name dachs --link postgres -p 80:80 \
-        --volume dachs_data:/var/gavo/inputs dachs_arihip:tmp
+(host)$ docker run -dt --name dachs_tmp --link postgres -p 80:80 \
+                   --volume dachs_data:/var/gavo/inputs dachs_arihip:tmp
 ```
 
 At this point, the service should be running just like before.
-In fact, if we go to http://localhost we will/should see DaCHS web page, and the
+If we go to http://localhost we will/should see DaCHS web page, and the
 ARIHIP dataset published.
 
-I feel like two notes are worth making now:
-
 > What happened when we included the `dachs_data` volume was that the data in
-> `/var/gavo/inputs` was copied to the (then empty) volume. This was transparent
-> to us, and it is so by design (https://docs.docker.com/storage/volumes/#populate-a-volume-using-a-container).
+> `/var/gavo/inputs` was copied to the (then empty) volume. For further details,
+> please visit the official [Docker documentation on volumes].
 
-> The same scenario could have been reached from the beginning by using a
-> "dachs_data" volume when we first started the `dachs` container in section
-> [#Dachs-v0.9.6], and then importing the (ARIHIP) data. We did split the
-> workflow here to present a common case where users will indeed have datasets
-> already inside the (one) container before realizing their data is inprisoned
-> inside it.
+[Docker documentation on volumes]: https://docs.docker.com/storage/volumes/#populate-a-volume-using-a-container).
+
+> Here we have detached (or _allowed for persistence_ if you will) the content
+> of `/var/gavo/inputs` simply because that was what we added/modified to the
+> container. But you can attach as many volumes as you _want_ or _need_.
+> For instance, if you modified the content of your `$GAVOSETTINGS`, or your
+> `/var/gavo/web` you may want to create a volume for `/var/gavo` instead.
+> An setup that I personally _like_ is to have each data service in its own
+> volume (`/var/gavo/inputs/*`).
+> _Just keep a backup of your data, then you are free to play around._
+
+
+### Before upgrading
+
+Before upgrading our setup, we [better check if everything is fine][Upgrading DaCHS]:
+```bash
+(host)$ gavo val -c ALL
+```
+From where we should see no errors.
+
+
+
+
+
+
+<sup>*</sup>: DaCHS version `v0.9.6` is going to be used since that was,
+effectively, the version _Dachs-on-Docker_ (DoD) started, and remained there
+until recently when people started using it and asked for updates -- when DoD
+jumped to `v1.2`. So...for historical reasons, like they say.

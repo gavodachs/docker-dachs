@@ -74,9 +74,9 @@ ARIHIP dataset published.
 
 > What happened when we included the `dachs_data` volume was that the data in
 > `/var/gavo/inputs` was copied to the (then empty) volume. For further details,
-> please visit the official [Docker documentation on volumes].
+> please visit the official [Docker documentation] on volumes.
 
-[Docker documentation on volumes]: https://docs.docker.com/storage/volumes/#populate-a-volume-using-a-container).
+[Docker documentation]: https://docs.docker.com/storage/volumes/#populate-a-volume-using-a-container
 
 > Here we have detached (or _allowed for persistence_ if you will) the content
 > of `/var/gavo/inputs` simply because that was what we added/modified to the
@@ -99,7 +99,8 @@ From where we should see no errors.
 
 
 
-
+- - - - -
+#### Footnotes
 
 <sup>*</sup>: DaCHS version `v0.9.6` is going to be used since that was,
 effectively, the version _Dachs-on-Docker_ (DoD) started, and remained there

@@ -15,9 +15,10 @@ RUN DEBIAN_FRONTEND='noninteractive'                    && \
 ENV LANG=C.UTF-8
 RUN echo LANG="$LANG" > /etc/default/locale
 
+# FIX: Avoid PG-version here. Move PG-Q3C extension to postgres container.
 ENV PG_VERSION=9.6
 
-RUN echo 'deb http://vo.ari.uni-heidelberg.de/debian release main'     \
+RUN echo 'deb http://vo.ari.uni-heidelberg.de/debian beta main'     \
         > /etc/apt/sources.list.d/gavo.list                         && \
     wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
 

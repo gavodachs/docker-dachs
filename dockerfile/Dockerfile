@@ -39,7 +39,7 @@ RUN PGDATA=/var/lib/postgresql/${PG_VERSION}                            \
       -c logging_collector=on"                                          & \
     for i in $(seq 20) ; do                                             \
        if pg_isready -q ; then break; else sleep $i ; fi ;              \
-    done  && \
+    done                                                                && \
     su postgres -c "createuser -s dachsroot"                            && \
     su postgres -c "createuser -s root"                                 && \
     su postgres -c "createdb gavo"

@@ -37,7 +37,9 @@ RUN PGDATA=/var/lib/postgresql/${PG_VERSION}                            \
     su - postgres  -c "/usr/lib/postgresql/${PG_VERSION}/bin/postgres   \
       -c config_file=/etc/postgresql/${PG_VERSION}/main/postgresql.conf \
       -c logging_collector=on"                                          & \
-    sleep 5                                                             && \
+    for i in $(seq 20) ; do                                             \
+       if pg_isready -q ; then break; else sleep $i ; fi ;              \
+    done  && \
     su postgres -c "createuser -s dachsroot"                            && \
     su postgres -c "createuser -s root"                                 && \
     su postgres -c "createdb gavo"

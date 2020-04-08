@@ -7,6 +7,14 @@ LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ O
 
 MAINTAINER "Carlos Brandt <carloshenriquebrandt at gmail>"
 
+# BUILD-time arguments; to use GAVO's "beta" repo, for instance,
+# `docker build --build-arg APT_REPO=beta .`
+ARG APT_REPO="release"
+
+# Same for PostgreSQL-q3c plugin (consequently, PSQL db altogether)
+ARG PG_VERSION=9.6
+ENV PG_VERSION=${PG_VERSION}
+
 RUN DEBIAN_FRONTEND='noninteractive'                    && \
     apt-get update                                      && \
     apt-get install -y sudo wget vim locales git gnupg  && \
@@ -15,9 +23,8 @@ RUN DEBIAN_FRONTEND='noninteractive'                    && \
 ENV LANG=C.UTF-8
 RUN echo LANG="$LANG" > /etc/default/locale
 
-ENV PG_VERSION=9.6
 
-RUN echo 'deb http://vo.ari.uni-heidelberg.de/debian release main'     \
+RUN echo "deb http://vo.ari.uni-heidelberg.de/debian ${APT_REPO} main" \
         > /etc/apt/sources.list.d/gavo.list                         && \
     wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
 

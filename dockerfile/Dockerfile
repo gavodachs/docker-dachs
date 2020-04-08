@@ -7,7 +7,9 @@ LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ O
 
 MAINTAINER "Carlos Brandt <carloshenriquebrandt at gmail>"
 
-ENV PG_VERSION=9.6
+ARG PG_VERSION=9.6
+ENV PG_VERSION=${PG_VERSION}
+
 
 RUN DEBIAN_FRONTEND='noninteractive'                    && \
     apt-get update                                      && \

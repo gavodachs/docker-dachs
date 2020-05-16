@@ -30,9 +30,9 @@ RUN echo "deb http://vo.ari.uni-heidelberg.de/debian release main"     \
         > /etc/apt/sources.list.d/gavo.list                         && \
     wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
 
-RUN [ -n "$APT_REPO" -a "$APT_REPO" != "release" ]                  && \
-    echo "deb http://vo.ari.uni-heidelberg.de/debian ${APT_REPO} main" \
-        > /etc/apt/sources.list.d/gavo.list                         && \
+RUN [ -n "$APT_REPO" -a "$APT_REPO" != "release" ] || echo "$APT_REPO" && \
+    echo "deb http://vo.ari.uni-heidelberg.de/debian ${APT_REPO} main"    \
+        > /etc/apt/sources.list.d/gavo.list                            && \
     wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
 
 #RUN sed -i 's/exit 101/exit 0/' /usr/sbin/policy-rc.d

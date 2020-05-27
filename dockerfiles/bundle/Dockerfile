@@ -36,8 +36,6 @@ RUN [ -n "$APT_REPO" -a "$APT_REPO" != "release" ] || echo "$APT_REPO" && \
         > /etc/apt/sources.list.d/gavo.list                            && \
     wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
 
-#RUN sed -i 's/exit 101/exit 0/' /usr/sbin/policy-rc.d
-
 RUN DEBIAN_FRONTEND='noninteractive'            && \
     apt-get update                              && \
     apt-get install -y "$PKG_NAME"              && \
@@ -45,14 +43,11 @@ RUN DEBIAN_FRONTEND='noninteractive'            && \
     gavo serve stop && service postgresql stop
 
 ENV GAVO_ROOT="/var/gavo"
+ENV GAVO_INPUTS="${GAVO_ROOT}/inputs"
+ENV GAVO_SETTINGS="/etc/gavo.rc"
 
-ENV GAVO_INPUTS="${GAVO_ROOT}/inputs"           \
-    GAVOSETTINGS="${GAVO_ROOT}/etc/gavo.rc"     \
-    GAVO_SETTINGS=$GAVOSETTINGS
+COPY etc/gavo.rc "$GAVO_SETTINGS"
 
-COPY etc/gavo.rc "$GAVOSETTINGS"
-
-EXPOSE 80
 EXPOSE 8080
 
 COPY bin/help.sh /help.sh

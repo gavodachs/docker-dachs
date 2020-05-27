@@ -26,12 +26,12 @@ $ docker build -t dachs2 \
 # Dachs release
 docker build --no-cache -t chbrandt/dachs:release .
 
-docker tag chbrandt/dachs:release chrandt/dachs:latest
-docker tag chbrandt/dachs:release chrandt/dachs:stable
-docker tag chbrandt/dachs:release chrandt/dachs:bundle
-docker tag chbrandt/dachs:release chrandt/dachs:1
-docker tag chbrandt/dachs:release chrandt/dachs:1.4
-docker tag chbrandt/dachs:release chrandt/dachs:all-in-one
+docker tag chbrandt/dachs:release chbrandt/dachs:latest
+docker tag chbrandt/dachs:release chbrandt/dachs:stable
+docker tag chbrandt/dachs:release chbrandt/dachs:bundle
+docker tag chbrandt/dachs:release chbrandt/dachs:1
+docker tag chbrandt/dachs:release chbrandt/dachs:1.4
+docker tag chbrandt/dachs:release chbrandt/dachs:all-in-one
 
 # Dachs 2/beta
 docker build --no-cache \
@@ -40,6 +40,6 @@ docker build --no-cache \
              --build-arg PKG_NAME=gavodachs2-server \
              .
 
-docker tag chbrandt/dachs:beta chrandt/dachs:2-beta
-docker tag chbrandt/dachs:beta chrandt/dachs:2
+docker tag chbrandt/dachs:beta chbrandt/dachs:2-beta
+docker tag chbrandt/dachs:beta chbrandt/dachs:2
 ```

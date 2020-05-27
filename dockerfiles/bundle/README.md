@@ -20,3 +20,26 @@ $ docker build -t dachs2 \
                --build-arg PKG_NAME='gavodachs2-server' \
                .
 ```
+
+## Commands used to build and tag _bundle_ images:
+```
+# Dachs release
+docker build --no-cache -t chbrandt/dachs:release .
+
+docker tag chbrandt/dachs:release chrandt/dachs:latest
+docker tag chbrandt/dachs:release chrandt/dachs:stable
+docker tag chbrandt/dachs:release chrandt/dachs:bundle
+docker tag chbrandt/dachs:release chrandt/dachs:1
+docker tag chbrandt/dachs:release chrandt/dachs:1.4
+docker tag chbrandt/dachs:release chrandt/dachs:all-in-one
+
+# Dachs 2/beta
+docker build --no-cache \
+             -t chbrandt/dachs:beta \
+             --build-arg APT_REPO=beta \
+             --build-arg PKG_NAME=gavodachs2-server \
+             .
+
+docker tag chbrandt/dachs:beta chrandt/dachs:2-beta
+docker tag chbrandt/dachs:beta chrandt/dachs:2
+```

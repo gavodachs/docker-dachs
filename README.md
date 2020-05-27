@@ -2,6 +2,9 @@
 
 **ToC**
 * [Getting started](#getting-started)
+  * [Test migration](#test-migration)
+    * [DaCHS 2](#dachs-2)
+* [Individual containers](#individual-containers)
   * [Feeding data: ARIHIP](#feeding-data-arihip-example)
     * [A note on data persistence](#a-note-on-data-persistence)
 * [Using Docker Compose](#using-docker-compose)
@@ -105,7 +108,7 @@ And then do the _imports_, _publications_, data access tests necessary to check
 for compatibility; and eventually migrate to the new version if/when everything is fine.
 
 
-### DaCHS-2 (beta)
+### DaCHS 2
 
 * Docker image tags: `beta`,`2`,`2-beta`
 
@@ -133,7 +136,7 @@ and use/test it as usual:
 Software (2.0.4) Schema (23/23)
 ```
 
-# DaCHS and PostgreSQL containers
+# Individual containers
 
 [Dachs-on-Docker][4] is a combination of two services/containers, a Postgres
 (`chbrandt/dachs:postgres`) db/container and the Dachs server/container

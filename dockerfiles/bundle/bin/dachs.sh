@@ -8,16 +8,25 @@ test -f /etc/default/apache2 && . /etc/default/apache2
 
 SERVER_BIN="/usr/bin/dachs --disable-spew serve"
 
+dachs_start() {
+	MODE="$1"
+	service postgresql status || service postgresql start
+	$SERVER_BIN $MODE
+}
+
 case $1 in
 	debug)
-    $SERVER_BIN debug && log_end_msg 0 || log_end_msg 1
+		log_daemon_msg "Starting VO server (debug)" "dachs"
+		dachs_start debug && log_end_msg 0 || log_end_msg 1
 	;;
 	start)
-		if $SERVER_BIN start; then
-			log_end_msg 0
-		else
-			log_end_msg 1
-		fi
+		log_daemon_msg "Starting VO server" "dachs"
+		dachs_start start && log_end_msg 0 || log_end_msg 1
+		#if $SERVER_BIN start; then
+		#	log_end_msg 0
+		#else
+		#	log_end_msg 1
+		#fi
 	;;
 	stop)
 		log_daemon_msg "Stopping VO server" "dachs"

@@ -7,14 +7,7 @@
 * [Individual containers](#individual-containers)
   * [Feeding data: ARIHIP](#feeding-data-arihip-example)
     * [A note on data persistence](#a-note-on-data-persistence)
-* [Using Docker Compose](#using-docker-compose)
-* [FROM `dachs:server`](#from-dachsserver)
-* [~Best practices](#best-practices)
-* [This repository structure](#this-repository-structure)
-* [Debugging things](#debugging-things)
-
-> If you have _suggestions or issues_ on running Dachs-on-Docker,
-consider filling an [issue on Github](https://github.com/chbrandt/docker-dachs/issues).
+* [Advanced use](#advanced-use)
 
 ---
 
@@ -41,7 +34,7 @@ The dockerfiles in here will setup image families (with their respective tags):
 
 # Getting started
 
-* Docker image tags: `latest`,`stable`,`bundle` (and `1`,`1.4`,`all-in-one`)
+> Docker image tags: `latest`,`stable`,`bundle` (and `1`,`1.4`,`all-in-one`)
 
 The "default" -- or `latest`, in Docker jargon -- is composed by _dachs-server_
 and _postgresql_.
@@ -225,6 +218,8 @@ datasets throught shutdowns.
 
 [5]: https://docs.docker.com/
 
+
+# Advanced use
 
 ## Using Docker Compose
 

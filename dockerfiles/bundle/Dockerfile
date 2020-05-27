@@ -11,6 +11,7 @@ MAINTAINER "Carlos Brandt <carloshenriquebrandt at gmail>"
 # `docker build --build-arg APT_REPO=beta .`
 ARG APT_REPO="release"
 
+# To build for dachs-2 use ('--build-arg') PKG_NAME=gavodachs2-server
 ARG PKG_NAME=gavodachs-server
 
 RUN DEBIAN_FRONTEND='noninteractive'                     && \

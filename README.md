@@ -5,8 +5,8 @@
   * [Test migration](#test-migration)
     * [DaCHS 2](#dachs-2)
 
-Check the documents directory ([docs/](docs/)) for notes on versioning your
-resources, persisting data, upgrading DaCHS, or running _dachs_, the server,
+Check the documents directory ([docs/](docs/)) for practical notes on versioning 
+your resources, persisting data, upgrading DaCHS, or running _dachs_, the server,
 separated from _postgresql_.
 
 
@@ -28,8 +28,8 @@ version of DaCHS.
 For detailed information on DaCHS itself or Docker, please
 visit their official documentation, [DaCHS/docs][1] or [Docker/docs][5].
 
-> Command-lines running from the _host_ system are prefixed by <b><code>(host)</code></b>.
-> And command-lines preceded by <b><code>(dock)</code></b> are run from inside the container.
+> Command-lines running from the _host_ system are prefixed by <b><code>(host)</code></b>;
+> And <b><code>(dock)</code></b> are run from inside the container.
 
 [1]: http://dachs-doc.readthedocs.io
 
@@ -145,8 +145,6 @@ a different Docker image(/tag) -- `chbrandt/dachs`(`:tag`), available at [Docker
 
 [3]: https://github.com/chbrandt/docker-dachs
 [4]: https://hub.docker.com/r/chbrandt/dachs/
-
-This ([Github][3]) repository offers a `docker-compose.yml` file.
 
 
 /.\

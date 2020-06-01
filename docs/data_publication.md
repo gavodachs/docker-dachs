@@ -1,10 +1,11 @@
-# Workflow
+# Data publication workflow
 
-* [Service versioning]
-* [Dachs upgrade]
+Here is a typical workflow suggestion where we use Git to versionize our Dachs resources and have a stable workflow.
+In the first section we use _git_ to [versionize a VO/dachs resource](#resource-versioning), and push and pull to have it
+[published through the container](#sharing-resource-to-container).
 
 
-## Service versioning
+### Resource versioning
 
 When maintaining a service it is reasonable to keep the config files in
 a versioning system (SCM).
@@ -26,7 +27,7 @@ but reasonably small so that we can _commit_ it to github.
 
 If there is no `q.rd` yet, we create a minimal one:
 ```
-$ cat q.rd
+(host)$ cat q.rd
 <resource schema="datasetx">
   <meta title="Dataset-X"
   <meta description="This is a dataset of X-events. Ever up-to-date."
@@ -36,21 +37,18 @@ EOF
 
 We can start versioning:
 ```
-$ git add q.rd data.csv
-$ git commit -am "Init. Minimal RD and data sample"
+(host)$ git add q.rd data.csv
+(host)$ git commit -am "Init. Minimal RD and data sample"
 ```
 
----
-*Note*: if using an upstream (_e.g._, Github), keep it updated with `git push`
-after `git commit`.
----
+> If using an upstream (_e.g._, Github), keep it updated with `git push` after `git commit`.
 
 As the RD evolves, versioning takes place as frequent as possible/reasonable.
 For example, let's say we defined all `<meta>` fields we feel important to
 inside `<resource>`.
 Would be reasonable to _tag_ the repository with a "v0.1" or "alpha" version,
 ```
-$ git tag -a m "<meta> data defined for <resource>" 0.1_dev
+(host)$ git tag -a m "<meta> data defined for <resource>" 0.1_dev
 ```
 (And `git push --tags`, if upstream.)
 
@@ -59,8 +57,8 @@ with the docker container until it gets into a stable version ("v1").
 At this point, the data publisher should simply synchronize (`git clone`),
 from the upstream (Github), and _publish_ the service. _E.g._,
 ```
-$ cd /var/gavo/inputs
-$ git clone <url>
+(host)$ cd /var/gavo/inputs
+(host)$ git clone <url>
 ```
 
 In this workflow we avoid directly copying files, a separated _repository_
@@ -68,7 +66,7 @@ simplifies the bi-directional synchronization of the files, and we win
 quite a reliable backup in the meantime :)
 
 
-## Mounting working directory to containers
+### Sharing resource to container
 
 I like to see the development process of a (Dachs) service as composed by one of
 more cycles of "_feature implementation_ > _test_ > _fix eventual error_ > _test_".
@@ -96,8 +94,8 @@ we can run our container like,
 And whenever the service is good to try,
 ```
 (host)$ docker exec -it dachs_datasetx bash
-(cont)$ gavo imp datasetx/q
-(cont)$ gavo pub datasetx/q
+(dock)$ gavo imp datasetx/q
+(dock)$ gavo pub datasetx/q
 ```
 
 At any given moment, `dachs_datasetx` container can be stoped and even removed.

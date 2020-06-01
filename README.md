@@ -37,10 +37,10 @@ visit their official documentation, [DaCHS/docs][1] or [Docker/docs][2].
 
 # Getting started
 
-> Docker image tags: `latest`,`stable`,`bundle` (and `1`,`1.4`,`all-in-one`)
+* Docker image tags: `latest`,`stable`,`bundle` (and `1`,`1.4`,`all-in-one`)
 
-The "default" -- or `latest`, in Docker jargon -- is composed by _dachs-server_
-and _postgresql_.
+The `latest` (default) image is composed by _dachs-server_ and _postgresql_,
+running on the same container.
 You run it by mapping the container's port (8080) to some on your host:
 ```bash
 (host)$ docker run -it --name dachs -p 80:8080 chbrandt/dachs
@@ -58,7 +58,7 @@ Inside the container, to start the services work like in a normal machine:
 (dock)$ /dachs.sh start
 ```
 
-> You can now go to your host's 'http://localhost' to check DaCHS web interface.
+> Go to your host's 'http://localhost' to check DaCHS web interface.
 
 To make a directory from the host system available from the container one can
 use the option argument '`-v`' to _mount_ a _volume_ at given location inside
@@ -82,10 +82,6 @@ For instance, run DaCHS and load/pub "resourceX":
 (dock)$
 (dock)$ service dachs reload
 ```
-
-> If you want to test the services -- dachs-server and postgresql -- running
-> separately, check section [DaCHS and PostgreSQL containers][].
-
 
 ## Test migration
 
@@ -134,15 +130,17 @@ Software (2.0.4) Schema (23/23)
 
 ## This repository structure
 
-This [Github][3] repository has four branches, `master`, `dachs`, `postgres`
-and `all-in-one`. Except from `master` each repository is associated with
-a different Docker image(/tag) -- `chbrandt/dachs`(`:tag`), available at [Docker Hub][4]:
+This [Github][3] repository has four branches, `master`, `dachs`, `postgres`. 
+The `master` branch has the Dockerfile for the `latest` (aka, _bundle_) docker image.
+The others, `dachs` and `postgres` have the Dockerfiles for the individual containers.
 
-| git branch | docker tag |
+DaCHS-on-Docker _image:tag_ sets for `chbrandt/dachs`,  available at [Docker Hub][4]:
+
+| git branch | docker image |
 | --- | --- |
-| `dachs` | `server` |
-| `postgres` | `postgres` |
-| `master` | `latest` |
+| `master` | `chbrandt/dachs:latest` |
+| `dachs` | `chbrandt/dachs:server` |
+| `postgres` | `chbrandt/dachs:postgres` |
 
 [3]: https://github.com/chbrandt/docker-dachs
 [4]: https://hub.docker.com/r/chbrandt/dachs/

@@ -5,10 +5,11 @@
   * [Test migration](#test-migration)
     * [DaCHS 2](#dachs-2)
 
-Check the documents directory ([docs/](docs/)) for practical notes on versioning 
-your resources, persisting data, upgrading DaCHS, or running _dachs_, the server,
-separated from _postgresql_.
-
+Check the documents directory ([docs/](docs/)) for (practical) notes on 
+* [versioning your resources](docs/data_publication.md),
+* [persisting data](docs/data_persistence.md), 
+* [upgrading DaCHS](docs/upgrade_dachs.md),
+* [running dachs and_postgresql individually](docs/individual_containers.md).
 
 ---
 

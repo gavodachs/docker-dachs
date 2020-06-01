@@ -88,8 +88,6 @@ datasets throught shutdowns.
 [5]: https://docs.docker.com/
 
 
-# Advanced use
-
 ## Using Docker Compose
 
 Docker Compose is a clean way of running multiple containers that, like this setup,

@@ -27,7 +27,7 @@ In this document we'll see how to run [Dachs-on-Docker][4], the containerized
 version of DaCHS.
 
 For detailed information on DaCHS itself or Docker, please
-visit their official documentation, [DaCHS/docs][1] or [Docker/docs][5].
+visit their official documentation, [DaCHS/docs][1] or [Docker/docs][2].
 
 > Command-lines running from the _host_ system are prefixed by <b><code>(host)</code></b>;
 > And <b><code>(dock)</code></b> are run from inside the container.
@@ -146,6 +146,7 @@ a different Docker image(/tag) -- `chbrandt/dachs`(`:tag`), available at [Docker
 
 [3]: https://github.com/chbrandt/docker-dachs
 [4]: https://hub.docker.com/r/chbrandt/dachs/
+[2]: https://docs.docker.com/
 
 
 /.\

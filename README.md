@@ -4,7 +4,7 @@ This repository contains the files for encapsulating [GAVO DaCHS](http://docs.g-
 in Docker containers.
 You'll find the corresponding images in ['chbrandt/dachs'][4] DockerHub repository.
 
-[![](https://img.shields.io/docker/v/chbrandt/dachs?label=DaCHS%20%28latest%29&style=for-the-badge)]
+![](https://img.shields.io/docker/v/chbrandt/dachs?label=DaCHS%20%28latest%29&style=for-the-badge)
 
 **ToC**
 * [Getting started](#getting-started)

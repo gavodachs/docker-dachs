@@ -11,13 +11,14 @@ MAINTAINER "Carlos Brandt <carloshenriquebrandt at gmail>"
 # `docker build --build-arg APT_REPO=beta .`
 ARG APT_REPO="release"
 
-# To build for dachs-2 use ('--build-arg') PKG_NAME=gavodachs2-server
-ARG PKG_NAME=gavodachs-server
+# To build for dachs-v1 use ('--build-arg') PKG_NAME=gavodachs-server
+# Default now is DaCHS-v2!
+ARG PKG_NAME=gavodachs2-server
 
 RUN DEBIAN_FRONTEND='noninteractive'                     && \
     apt-get update                                       && \
     apt-get install -y sudo wget vim locales git gnupg2  && \
-    apt-get clean
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # This is the brute-force solution for Debian;
 # I am having problems in set locales non-interactively,
@@ -31,16 +32,18 @@ RUN echo "deb http://vo.ari.uni-heidelberg.de/debian release main"     \
         > /etc/apt/sources.list.d/gavo.list                         && \
     wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
 
-RUN [ -n "$APT_REPO" -a "$APT_REPO" != "release" ] || echo "$APT_REPO" && \
+RUN [ -n "$APT_REPO" -a "$APT_REPO" != "release" ] && echo "$APT_REPO" && \
     echo "deb http://vo.ari.uni-heidelberg.de/debian ${APT_REPO} main"    \
-        > /etc/apt/sources.list.d/gavo.list                            && \
-    wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
+        >> /etc/apt/sources.list.d/gavo.list
 
-RUN DEBIAN_FRONTEND='noninteractive'            && \
-    apt-get update                              && \
-    apt-get install -y "$PKG_NAME"              && \
-    apt-get clean                               && \
+RUN DEBIAN_FRONTEND='noninteractive'              && \
+    apt-get update                                && \
+    apt-get install -y "$PKG_NAME"                && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*  && \
     gavo serve stop && service postgresql stop
+
+#RUN PKG_VERSION=$(dpkg -l $PKG_NAME | tail -n1 | tr -s ' ' | cut -d' ' -f2-3) \
+#    && echo -e "#-#-#\nInstalled DaCHS version: ${PKG_VERSION}\n#-#-#"
 
 ENV GAVO_ROOT="/var/gavo"
 ENV GAVO_INPUTS="${GAVO_ROOT}/inputs"

@@ -17,8 +17,8 @@ ENV PG_VERSION=${PG_VERSION}
 
 RUN DEBIAN_FRONTEND='noninteractive'                    && \
     apt-get update                                      && \
-    apt-get install -y sudo wget vim locales git gnupg  && \
-    apt-get clean
+    apt-get install -y wget vim locales gnupg2          && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ENV LANG=C.UTF-8
 RUN echo LANG="$LANG" > /etc/default/locale
@@ -27,13 +27,18 @@ RUN echo "deb http://vo.ari.uni-heidelberg.de/debian ${APT_REPO} main" \
         > /etc/apt/sources.list.d/gavo.list                         && \
     wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
 
+# Default is the Python-3 packages under Dachs-2.
+# If you want Dachs-1 Python(2) library, use 'python-gavodachs' instead
+ENV PKG_NAME="python3-gavo"
+
 RUN DEBIAN_FRONTEND='noninteractive'                                  && \
     apt-get update                                                    && \
-    apt-get install -y python-gavodachs postgresql-${PG_VERSION}-q3c  && \
-    apt-get clean
+    apt-get install -y ${PKG_NAME} postgresql-${PG_VERSION}-q3c  && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-ENV GAVO_ROOT="/var/gavo"                       \
-    GAVOSETTINGS="${GAVO_ROOT}/etc/gavo.rc"
+ENV GAVO_ROOT="/var/gavo"
+ENV GAVO_INPUTS="${GAVO_ROOT}/inputs"
+ENV GAVO_SETTINGS="/etc/gavo.rc"
 
 RUN addgroup --system gavo                                          && \
     adduser --system --ingroup gavo gavo                            && \
@@ -43,9 +48,9 @@ RUN addgroup --system gavo                                          && \
     mkdir -m 775 "${GAVO_ROOT}"                                     && \
     chown dachsroot "${GAVO_ROOT}"
 
-EXPOSE 80
+COPY etc/gavo.rc "$GAVO_SETTINGS"
 
-COPY etc/gavo.rc "$GAVOSETTINGS"
+EXPOSE 8080
 
 COPY bin/dachs.sh /dachs.sh
 

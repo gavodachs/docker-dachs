@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:buster
 
 LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
       Author=Markus\ Demleitner \
@@ -12,7 +12,7 @@ MAINTAINER "Carlos Brandt <carloshenriquebrandt at gmail>"
 ARG APT_REPO="release"
 
 # Same for PostgreSQL-q3c plugin (consequently, PSQL db altogether)
-ARG PG_VERSION=9.6
+ARG PG_VERSION=11
 ENV PG_VERSION=${PG_VERSION}
 
 RUN DEBIAN_FRONTEND='noninteractive'                    && \

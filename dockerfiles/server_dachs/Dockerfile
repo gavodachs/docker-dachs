@@ -34,7 +34,9 @@ ENV PKG_NAME="python3-gavo"
 RUN DEBIAN_FRONTEND='noninteractive'                                  && \
     apt-get update                                                    && \
     apt-get install -y ${PKG_NAME} postgresql-${PG_VERSION}-q3c  && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    apt-get upgrade -y ${PKG_NAME}
+
 
 ENV GAVO_ROOT="/var/gavo"
 ENV GAVO_INPUTS="${GAVO_ROOT}/inputs"

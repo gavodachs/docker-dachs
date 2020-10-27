@@ -1,8 +1,8 @@
 version: '3'
 services:
     dachs:
-        image: dachs:2.1_buster
-        container_name: dachs_2.1
+        image: dachs:2_buster
+        container_name: dachs_2
         build:
             context: ./dockerfiles/server_dachs
         tty: true

@@ -1,18 +1,22 @@
 version: '3'
 services:
     dachs:
-        image: chbrandt/dachs:server
-        container_name: dachs
+        image: dachs:2_buster
+        container_name: dachs_2
+        build:
+            context: ./dockerfiles/server_dachs
         tty: true
         network_mode: 'bridge'
         ports:
-            - '80:80'
+            - '80:8080'
         links:
             - postgres
         depends_on:
             - postgres
     postgres:
-        image: chbrandt/dachs:postgres
+        image: dachs:postgres_11
         container_name: postgres
+        build:
+            context: ./dockerfiles/server_postgres
         tty: true
         network_mode: 'bridge'

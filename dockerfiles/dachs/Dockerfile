@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:buster
 
 LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
       Author=Markus\ Demleitner \
@@ -13,7 +13,7 @@ ARG APT_REPO="release"
 
 # To build for dachs-v1 use ('--build-arg') PKG_NAME=gavodachs-server
 # Default now is DaCHS-v2!
-ARG PKG_NAME=gavodachs2-server
+ARG PKG_NAME="gavodachs2-server"
 
 RUN DEBIAN_FRONTEND='noninteractive'                     && \
     apt-get update                                       && \

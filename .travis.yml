@@ -1,0 +1,14 @@
+services:
+  - docker
+
+install:
+  - docker build -t dachs:test ./dockerfiles/dachs/
+  - docker run --name dachs_container -dt dachs:test
+
+script:
+  - docker ps | grep -q dachs_container
+  - docker exec dachs_container /dachs.sh start
+  - docker cp data/download_arihip.sh dachs_container:/tmp/download.sh
+  - docker exec dachs_container /tmp/download.sh arihip /var/gavo/inputs
+  - docker exec dachs_container dachs imp -M 1000 arihip/q.rd
+  - docker exec dachs_container dachs test ALL

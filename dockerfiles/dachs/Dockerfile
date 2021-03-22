@@ -1,5 +1,5 @@
-ARG BASE_IMAGE="debian:buster"
-FROM $BASE_IMAGE
+ARG DEBIAN_IMAGE="buster"
+FROM "debian:$DEBIAN_IMAGE"
 
 LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
       Author=Markus\ Demleitner \
@@ -16,10 +16,17 @@ ARG APT_REPO="release"
 # Default now is DaCHS-v2!
 ARG PKG_NAME="gavodachs2-server"
 
-RUN DEBIAN_FRONTEND='noninteractive'                     && \
-    apt-get update                                       && \
-    apt-get install -y sudo wget vim locales git gnupg2  && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN DEBIAN_FRONTEND='noninteractive' \
+    && apt-get update \
+    && apt-get install -y \
+      curl \
+      git \
+      gnupg2 \
+      locales \
+      sudo \
+      vim \
+      wget \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # This is the brute-force solution for Debian;
 # I am having problems in set locales non-interactively,
@@ -50,7 +57,7 @@ RUN DEBIAN_FRONTEND='noninteractive'              && \
 ENV GAVO_ROOT="/var/gavo"
 ENV GAVO_INPUTS="${GAVO_ROOT}/inputs"
 ENV GAVO_SETTINGS="/etc/gavo.rc"
-ENV GAVOSETTINGS="$GAVO_SETTINGS" 
+ENV GAVOSETTINGS="$GAVO_SETTINGS"
 
 COPY etc/gavo.rc "$GAVOSETTINGS"
 

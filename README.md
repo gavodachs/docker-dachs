@@ -6,6 +6,8 @@ You'll find the corresponding images in ['chbrandt/dachs'][4] DockerHub reposito
 
 ![](https://img.shields.io/docker/v/chbrandt/dachs/2.1?label=DaCHS%20%28latest%29&style=for-the-badge)
 
+[![Build Status](https://travis-ci.org/gavodachs/docker-dachs.svg?branch=master)](https://travis-ci.org/gavodachs/docker-dachs)
+
 **ToC**
 * [Getting started](#getting-started)
   * [Test migration](#test-migration)

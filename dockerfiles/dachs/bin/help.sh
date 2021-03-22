@@ -1,5 +1,4 @@
 #!/bin/bash
-set -ue
 
 PG_VERSION=$(psql --version 2> /dev/null | tr -s ' ' | cut -d' ' -f 3)
 DS_VERSION=$(dachs --version 2> /dev/null | tr -d '(-)' | cut -d' ' -f 3)

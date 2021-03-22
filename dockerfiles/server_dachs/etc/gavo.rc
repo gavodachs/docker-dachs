@@ -1,5 +1,0 @@
-[web]
-sitename: Dachs-on-Docker
-bindAddress:
-serverPort: 8080
-serverURL: http://localhost:8080

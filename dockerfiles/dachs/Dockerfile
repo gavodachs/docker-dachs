@@ -1,4 +1,5 @@
-FROM debian:buster
+ARG BASE_IMAGE="debian:buster"
+FROM $BASE_IMAGE
 
 LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
       Author=Markus\ Demleitner \
@@ -49,12 +50,13 @@ RUN DEBIAN_FRONTEND='noninteractive'              && \
 ENV GAVO_ROOT="/var/gavo"
 ENV GAVO_INPUTS="${GAVO_ROOT}/inputs"
 ENV GAVO_SETTINGS="/etc/gavo.rc"
+ENV GAVOSETTINGS="$GAVO_SETTINGS" 
 
-COPY etc/gavo.rc "$GAVO_SETTINGS"
+COPY etc/gavo.rc "$GAVOSETTINGS"
 
 EXPOSE 8080
 
-COPY bin/help.sh /help.sh
+COPY bin/help.sh /dachs/help.sh
 COPY bin/dachs.sh /dachs.sh
 
-CMD ["/bin/bash", "--rcfile", "/help.sh"]
+CMD ["/bin/bash", "--rcfile", "/dachs/help.sh"]

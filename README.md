@@ -154,20 +154,6 @@ and use/test it as usual:
 Software (2.0.4) Schema (23/23)
 ```
 
-## This repository structure
-
-This [Github][3] repository has four branches, `master`, `dachs`, `postgres`.
-The `master` branch has the Dockerfile for the `latest` (aka, _bundle_) docker image.
-The others, `dachs` and `postgres` have the Dockerfiles for the individual containers.
-
-DaCHS-on-Docker _image:tag_ sets for `chbrandt/dachs`,  available at [Docker Hub][4]:
-
-| git branch | docker image |
-| --- | --- |
-| `master` | `chbrandt/dachs:latest` |
-| `dachs` | `chbrandt/dachs:server` |
-| `postgres` | `chbrandt/dachs:postgres` |
-
 [3]: https://github.com/chbrandt/docker-dachs
 [4]: https://hub.docker.com/r/chbrandt/dachs/
 [2]: https://docs.docker.com/

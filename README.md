@@ -4,7 +4,7 @@ This repository contains the files for encapsulating [GAVO DaCHS](http://docs.g-
 in Docker containers.
 You'll find the corresponding images in ['chbrandt/dachs'][4] DockerHub repository.
 
-[![Build Status](https://travis-ci.org/gavodachs/docker-dachs.svg?branch=master)](https://travis-ci.org/gavodachs/docker-dachs)
+[![Build Status](https://travis-ci.com/gavodachs/docker-dachs.svg?branch=master)](https://travis-ci.com/gavodachs/docker-dachs)
 
 **ToC**
 * [Getting started](#getting-started)

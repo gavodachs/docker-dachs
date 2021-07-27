@@ -17,17 +17,6 @@ Check the documents directory ([docs/](docs/)) for (practical) notes on
 * [upgrading DaCHS](docs/upgrade_dachs.md),
 * [running dachs and postgresql individually](docs/individual_containers.md).
 
-#### Note on DaCHS versions
-
-**Notice** that DaCHS is currently maintained under two versions, the good-old `v1.x`
-(`v1.4` as of July/2020) running on Python-2, and the new `v2.x` series (Python-3).
-The _beta_ period for version-2 is gone, but you may find some residuals in the
-following docs; _Please, let me know if something doesn't fit in_.
-
-> By all means, for those coming here looking for a test bed to test the eventual
-> upgrade of their DBMS, you may find sections [Test migration](#test-migration)
-> and [DaCHS 2](#dachs-2) helpful.
-
 
 ---
 

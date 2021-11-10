@@ -1,4 +1,4 @@
-ARG DEBIAN_IMAGE="buster"
+ARG DEBIAN_IMAGE="bullseye"
 FROM "debian:$DEBIAN_IMAGE"
 
 LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
@@ -8,13 +8,22 @@ LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ O
 
 MAINTAINER "Carlos Brandt <carloshenriquebrandt at gmail>"
 
-# BUILD-time arguments; to use GAVO's "beta" repo, for instance,
-# `docker build --build-arg APT_REPO=beta .`
-ARG APT_REPO="release"
+# BUILD argument for extra repositories (besides debian/main) to install dachs.
+# Options are:
+# - backports (debian/backports)
+# - beta (gavo/release + gavo/beta)
+ARG INSTALL_REPO="${INSTALL_REPO:-main}"
 
 # To build for dachs-v1 use ('--build-arg') PKG_NAME=gavodachs-server
 # Default now is DaCHS-v2!
 ARG PKG_NAME="gavodachs2-server"
+
+REPO_RELEASE='deb http://vo.ari.uni-heidelberg.de/debian release main'
+REPO_BETA='deb http://vo.ari.uni-heidelberg.de/debian beta main'
+REPO_BACKPORT='deb http://deb.debian.org/debian bullseye-backports main contrib'
+
+ENV APT_SOURCES="/etc/apt/sources.list.d/gavo.list"
+COPY /etc/apt_sources.list "$APT_SOURCES"
 
 RUN DEBIAN_FRONTEND='noninteractive' \
     && apt-get update \
@@ -26,7 +35,7 @@ RUN DEBIAN_FRONTEND='noninteractive' \
       sudo \
       vim \
       wget \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && apt-get clean
 
 # This is the brute-force solution for Debian;
 # I am having problems in set locales non-interactively,
@@ -36,19 +45,22 @@ RUN echo LC_ALL="$LC_ALL" > /etc/default/locale
 
 RUN sed -i 's/exit 101/exit 0/' /usr/sbin/policy-rc.d
 
-RUN echo "deb http://vo.ari.uni-heidelberg.de/debian release main"     \
-        > /etc/apt/sources.list.d/gavo.list                         && \
-    wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
+#RUN echo "deb http://vo.ari.uni-heidelberg.de/debian release main"     \
+#        > /etc/apt/sources.list.d/gavo.list                         && \
+RUN wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
 
-RUN [ "$APT_REPO" != "release" ] || echo "Using only 'release' deb/repo" && \
-    echo "deb http://vo.ari.uni-heidelberg.de/debian ${APT_REPO} main"      \
-        >> /etc/apt/sources.list.d/gavo.list                             && \
-    echo "Using also '$APT_REPO' deb/repo"
+RUN
+    [ "$INSTALL_REPO" != "main" ]                     && \
+      echo "$REPO_BACKPORT" >> $APT_SOURCES           && \
+    [ "$INSTALL_REPO" = "beta" ]                      && \
+      echo "$REPO_RELEASE" >> $APT_SOURCES            && \
+      echo "$REPO_BETA" >> $APT_SOURCES               && \
+    echo "Using the following repositories:" && grep "deb" $APT_SOURCES
 
 RUN DEBIAN_FRONTEND='noninteractive'              && \
     apt-get update                                && \
     apt-get install -y "$PKG_NAME"                && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*  && \
+    apt-get clean                                 && \
     gavo serve stop && service postgresql stop
 
 #RUN PKG_VERSION=$(dpkg -l $PKG_NAME | tail -n1 | tr -s ' ' | cut -d' ' -f2-3) \

@@ -48,7 +48,7 @@ RUN echo LC_ALL="$LC_ALL" > /etc/default/locale
 RUN sed -i 's/exit 101/exit 0/' /usr/sbin/policy-rc.d
 
 RUN wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
-RUN [ "$INSTALL_REPO" = "backports" ] \
+RUN [ "$INSTALL_REPO" = "backports" -o "$INSTALL_REPO" = "beta" ] \
       && sed -i '/deb.*backports/s/^#//' $APT_SOURCES \
       || echo "NOT using debian/backports repo"
 RUN [ "$INSTALL_REPO" = "beta" ] \

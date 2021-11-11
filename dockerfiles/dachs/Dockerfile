@@ -13,14 +13,15 @@ MAINTAINER "Carlos Brandt <carloshenriquebrandt at gmail>"
 # - backports (debian/backports)
 # - beta (gavo/release + gavo/beta)
 ARG INSTALL_REPO="${INSTALL_REPO:-main}"
+ENV INSTALL_REPO=$INSTALL_REPO
 
 # To build for dachs-v1 use ('--build-arg') PKG_NAME=gavodachs-server
 # Default now is DaCHS-v2!
 ARG PKG_NAME="gavodachs2-server"
 
-REPO_RELEASE='deb http://vo.ari.uni-heidelberg.de/debian release main'
-REPO_BETA='deb http://vo.ari.uni-heidelberg.de/debian beta main'
-REPO_BACKPORT='deb http://deb.debian.org/debian bullseye-backports main contrib'
+ENV REPO_RELEASE='deb http://vo.ari.uni-heidelberg.de/debian release main'
+ENV REPO_BETA='deb http://vo.ari.uni-heidelberg.de/debian beta main'
+ENV REPO_BACKPORT='deb http://deb.debian.org/debian bullseye-backports main contrib'
 
 ENV APT_SOURCES="/etc/apt/sources.list.d/gavo.list"
 COPY /etc/apt_sources.list "$APT_SOURCES"
@@ -32,6 +33,7 @@ RUN DEBIAN_FRONTEND='noninteractive' \
       git \
       gnupg2 \
       locales \
+      procps \
       sudo \
       vim \
       wget \
@@ -45,17 +47,14 @@ RUN echo LC_ALL="$LC_ALL" > /etc/default/locale
 
 RUN sed -i 's/exit 101/exit 0/' /usr/sbin/policy-rc.d
 
-#RUN echo "deb http://vo.ari.uni-heidelberg.de/debian release main"     \
-#        > /etc/apt/sources.list.d/gavo.list                         && \
 RUN wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
-
-RUN
-    [ "$INSTALL_REPO" != "main" ]                     && \
-      echo "$REPO_BACKPORT" >> $APT_SOURCES           && \
-    [ "$INSTALL_REPO" = "beta" ]                      && \
-      echo "$REPO_RELEASE" >> $APT_SOURCES            && \
-      echo "$REPO_BETA" >> $APT_SOURCES               && \
-    echo "Using the following repositories:" && grep "deb" $APT_SOURCES
+RUN [ "$INSTALL_REPO" = "backports" ] \
+      && sed -i '/deb.*backports/s/^#//' $APT_SOURCES \
+      || echo "NOT using debian/backports repo"
+RUN [ "$INSTALL_REPO" = "beta" ] \
+      && sed -i '/deb.*heidelberg/s/^#//' $APT_SOURCES \
+      || echo "NOT using gavo beta/release repos"
+RUN echo "Using the following repositories:" && grep "deb" $APT_SOURCES
 
 RUN DEBIAN_FRONTEND='noninteractive'              && \
     apt-get update                                && \

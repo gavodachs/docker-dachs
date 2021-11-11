@@ -1,0 +1,31 @@
+version: '3'
+services:
+    dachs:
+        container_name: dachs-server
+        build:
+            context: ./dockerfiles/dachs_server
+        image: dachs-server
+        tty: true
+        network_mode: 'bridge'
+        ports:
+            - '8080:8080'
+        links:
+            - postgres
+        depends_on:
+            - postgres
+        volumes:
+          - ./logs/dachs:/var/gavo/logs
+    awstats:
+        container_name: awstats
+        build:
+            context: ./dockerfiles/awstats
+        image: dachs-awstats
+        tty: true
+        network_mode: 'bridge'
+        ports:
+            - '80:80'
+        depends_on:
+            - dachs
+        volumes:
+          - ./logs/dachs:/var/gavo/logs:ro
+

@@ -10,3 +10,10 @@ and vice-versa -- Dachs frontpage "-->" Awstats --, it would be better if we cou
 _avoid_ their _edition_ but still have them linked somehow.
 Specially for Awstats, it would be nice to have the generated html (from `awstats.pl`)
 inside a "frame" in services frontpage (`http://localhost`) for "Awstats" button.
+
+
+# Apache Server Side Includes
+
+In a first search I've learned about Apache' HTTPD SSI (server-side includes)
+which are indeed to add dynamic content to existing HTML documents.
+The official docs: https://httpd.apache.org/docs/2.4/howto/ssi.html .

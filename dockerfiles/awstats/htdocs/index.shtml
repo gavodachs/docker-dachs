@@ -1,0 +1,16 @@
+<html>
+
+<body>
+  <h1>It works!</h1>
+  <p>Today is
+    <!--#echo var="DATE_LOCAL" -->
+  </p>
+  <p>
+    <!--#include virtual="/awstats/awstats.pl" -->
+  </p>
+  <p>This document last modified
+    <!--#flastmod file="index.shtml" -->
+  </p>
+</body>
+
+</html>

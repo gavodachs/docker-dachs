@@ -24,3 +24,7 @@ RUN usermod -a -G www-data daemon && \
 
 COPY etc/apache2_ssi.conf $HTTPD_PREFIX/conf/ssi.conf
 RUN echo "Include conf/ssi.conf" >> $HTTPD_PREFIX/conf/httpd.conf
+
+# This is a dummy/test frontpage to include awstats page (ssi)
+# But the cgi/awstats is not appearing; don't know why.
+COPY htdocs/index.shtml $HTTPD_PREFIX/htdocs/index.shtml

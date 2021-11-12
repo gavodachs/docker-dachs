@@ -1,15 +1,23 @@
-FROM debian:bullseye
+FROM httpd:bullseye
 
 RUN DEBIAN_FRONTEND='noninteractive'      && \
     apt-get update                        && \
-    apt-get install -y apache2 awstats    && \
+    apt-get install -y awstats            && \
     apt-get clean
 
-COPY etc/apache2_awstats.conf /etc/apache2/conf-available/awstats.conf
 COPY /etc/awstats.conf /etc/awstats/awstats.conf.local
 
-RUN a2enmod include.load && a2enmod cgi && a2enconf awstats
+#ENV APACHE_ROOT=/usr/local/apache2
 
-COPY bin/entrypoint.sh /entrypoint.sh
+COPY etc/apache2_awstats.conf $HTTPD_PREFIX/conf/awstats.conf
+RUN echo "Include conf/awstats.conf" >> $HTTPD_PREFIX/conf/httpd.conf
 
-ENTRYPOINT ["/bin/bash", "--rcfile", "/entrypoint.sh"]
+COPY etc/apache2_ssi.conf $HTTPD_PREFIX/conf/ssi.conf
+RUN echo "Include conf/ssi.conf" >> $HTTPD_PREFIX/conf/httpd.conf
+
+#RUN a2enmod include.load && a2enmod cgi && a2enconf awstats
+RUN a2enconf awstats
+
+#COPY bin/entrypoint.sh /entrypoint.sh
+
+#ENTRYPOINT ["/bin/bash", "--rcfile", "/entrypoint.sh"]

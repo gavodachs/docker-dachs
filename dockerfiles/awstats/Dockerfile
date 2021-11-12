@@ -24,9 +24,3 @@ RUN usermod -a -G www-data daemon && \
 
 COPY etc/apache2_ssi.conf $HTTPD_PREFIX/conf/ssi.conf
 RUN echo "Include conf/ssi.conf" >> $HTTPD_PREFIX/conf/httpd.conf
-
-#RUN a2enmod include.load && a2enmod cgi && a2enconf awstats
-
-#COPY bin/entrypoint.sh /entrypoint.sh
-
-#ENTRYPOINT ["/bin/bash", "--rcfile", "/entrypoint.sh"]

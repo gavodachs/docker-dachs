@@ -1,17 +1,19 @@
 version: '3'
+
 services:
+
     dachs:
         container_name: dachs
         build:
             context: ./dachs
         image: dachs
-          #command: sh -c "/dachs.sh start"
         tty: true
         network_mode: 'bridge'
         ports:
             - '8080:8080'
         volumes:
           - ./logs/dachs:/var/gavo/logs
+
     awstats:
         container_name: awstats
         build:

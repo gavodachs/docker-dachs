@@ -5,6 +5,7 @@ services:
         build:
             context: ./dachs
         image: dachs
+          #command: sh -c "/dachs.sh start"
         tty: true
         network_mode: 'bridge'
         ports:

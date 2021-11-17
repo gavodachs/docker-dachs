@@ -21,11 +21,11 @@ RUN DEBIAN_FRONTEND='noninteractive' \
       wget \
     && apt-get clean
 
-# BUILD argument for extra repositories (besides debian/main) to install dachs.
+# BUILD argument for extra repositories (besides debian/stable) to install dachs.
 # Options are:
 # - backports (debian/backports)
 # - beta (gavo/release + gavo/beta)
-ARG INSTALL_REPO="${INSTALL_REPO:-main}"
+ARG INSTALL_REPO="${INSTALL_REPO:-stable}"
 
 ENV REPO_RELEASE='deb http://vo.ari.uni-heidelberg.de/debian release main'
 ENV REPO_BETA='deb http://vo.ari.uni-heidelberg.de/debian beta main'

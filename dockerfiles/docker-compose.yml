@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+
+  dachs:
+      container_name: dachs
+      build:
+        context: ./dachs
+        args:
+          INSTALL_REPO: "${INSTALL_REPO-:stable}"
+      image: "dachs:${INSTALL_REPO:-stable}"
+      environment:
+        -
+      tty: true
+      network_mode: 'bridge'
+      ports:
+        - 8080:8080
+      volumes:
+        - "${DACHS_LOGS_PATH:-./logs/dachs}":/var/gavo/logs:ro
+
+  awstats:
+      container_name: awstats
+      build:
+        context: ./awstats
+      image: awstats
+      tty: true
+      network_mode: 'bridge'
+      ports:
+        - 80:80
+      depends_on:
+        - dachs
+      volumes:
+        - "${DACHS_LOGS_PATH:-./logs/dachs}":/var/gavo/logs:ro

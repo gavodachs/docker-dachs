@@ -1,18 +1,20 @@
 # Dachs-on-Docker recipes
 
-Here you'll find docker container recipes. In each directory, the files
-necessary to build the respective images. The primary, fundamental container
-in this scenario is [`dachs`](dachs/), inside it's directory you'll find
-more detailed information on it's building and (image) content.
+Here you'll find docker container recipes and build scripts for Dachs and surrounding services.
 
-Next to `dachs` (container) you can arrange other container, naturally,
-if you want to instantiate or split services among "composed" containers.
+The primary container is [`dachs`](dachs/), inside it's directory you'll find
+more detailed information on it's building and content.
+Although `dachs` is self-sufficient, you can have a [`postgres`](postgres/)
+container servicing the database.
+[Awstats](https://awstats.sourceforge.io/) was adopted to parse Dachs' logs,
+the use of it is completely optional too.
 
-For instance, in [`awstats`](awstats/) you'll find the recipe for a container
-providing [Awstats](https://awstats.sourceforge.io/) for access-log stats.
-You should be able to spin up both containers using `docker-compose.awstats.yml`
-provided:
+Look in [`docker-compose`](docker-compose.yml) for an example of services setup.
+
+## Run compose
+
+To run (and build if not yet) all the containers:
 
 ```bash
-$ docker-compose -f docker-compose.awstats.yml
+$ docker-compose -f docker-compose.yml -d up
 ```

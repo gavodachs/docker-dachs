@@ -21,12 +21,20 @@ RUN DEBIAN_FRONTEND='noninteractive' \
       wget \
     && apt-get clean
 
-# BUILD-time arguments; to use GAVO's "beta" repo, for instance,
-# `docker build --build-arg APT_REPO=beta .`
-ARG APT_REPO="release"
+# BUILD argument for extra repositories (besides debian/stable) to install dachs.
+# Options are:
+# - backports (debian/backports)
+# - beta (gavo/release + gavo/beta)
+ARG INSTALL_REPO="${INSTALL_REPO:-stable}"
 
-# Postgres is needed here because of PostgreSQL-q3c plugin
-ARG PG_VERSION=11
+ENV REPO_RELEASE='deb http://vo.ari.uni-heidelberg.de/debian release main'
+ENV REPO_BETA='deb http://vo.ari.uni-heidelberg.de/debian beta main'
+ENV REPO_BACKPORT='deb http://deb.debian.org/debian bullseye-backports main contrib'
+
+ENV APT_SOURCES="/etc/apt/sources.list.d/gavo.list"
+COPY /etc/apt_sources.list "$APT_SOURCES"
+
+ARG PG_VERSION=13
 ENV PG_VERSION=${PG_VERSION}
 
 # This is the brute-force solution for Debian;
@@ -35,18 +43,29 @@ ENV PG_VERSION=${PG_VERSION}
 ENV LC_ALL=C.UTF-8
 RUN echo LC_ALL="$LC_ALL" > /etc/default/locale
 
-RUN echo "deb http://vo.ari.uni-heidelberg.de/debian ${APT_REPO} main" \
-        > /etc/apt/sources.list.d/gavo.list                         && \
-    wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
+RUN sed -i 's/exit 101/exit 0/' /usr/sbin/policy-rc.d
+
+RUN wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
+
+RUN [ "$INSTALL_REPO" = "backports" -o "$INSTALL_REPO" = "beta" ] \
+      && sed -i '/deb.*backports/s/^#//' $APT_SOURCES \
+      || echo "NOT using debian/backports repo"
+
+RUN [ "$INSTALL_REPO" = "beta" ] \
+      && sed -i '/deb.*heidelberg/s/^#//' $APT_SOURCES \
+      || echo "NOT using gavo beta/release repos"
+
+RUN echo "Using the following repositories:" && grep "deb" $APT_SOURCES
 
 RUN DEBIAN_FRONTEND='noninteractive'                  && \
     apt-get update                                    && \
     apt-get install -y python3-gavo                   && \
     apt-get install -y postgresql-$PG_VERSION-q3c     && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get clean
 
 ENV GAVO_ROOT="/var/gavo"
-ENV GAVOSETTINGS="/etc/gavo.rc"
+ENV GAVO_INPUTS="${GAVO_ROOT}/inputs"
+ENV GAVO_SETTINGS="/etc/gavo.rc"
 
 RUN addgroup --system gavo                                          && \
     adduser --system --ingroup gavo gavo                            && \
@@ -56,10 +75,13 @@ RUN addgroup --system gavo                                          && \
     mkdir -m 775 "${GAVO_ROOT}"                                     && \
     chown dachsroot "${GAVO_ROOT}"
 
+ENV GAVOSETTINGS="$GAVO_SETTINGS"
 COPY etc/gavo.rc "$GAVOSETTINGS"
 
-EXPOSE 8080
+ENV GAVO_PORT=8080
+EXPOSE $GAVO_PORT
 
 COPY bin/serve.sh /serve.sh
 
-CMD ["/bin/bash", "--rcfile", "/serve.sh"]
+ENTRYPOINT ["/bin/bash"]
+CMD ["--rcfile", "/serve.sh"]

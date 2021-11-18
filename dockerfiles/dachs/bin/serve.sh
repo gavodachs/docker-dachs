@@ -53,22 +53,28 @@ echo ''
 
 # get the name of the postgres container linked to this one
 # PG_ENV_ALIAS=$(env | grep "ENV_PG_VERSION" | cut -d"_" -f1)
+
 _VARS=($(env | grep "ENV_PG_VERSION"))
-_ALIAS=$(echo ${_VARS[0]} | cut -d"_" -f1)
-_AUX="${_ALIAS}_NAME"
-PG_HOST=$(basename `echo "${!_AUX}" | cut -d"=" -f2`)
-export PG_HOST
 
-# first, make sure the environment is initialised (can't do that
-# at image build time since the postgres container is not available then)
-echo -n "Waiting for postgres to come up..."
-while ! su - dachsroot -c "psql -h ${PG_HOST} --quiet gavo -c 'SELECT 1' > /dev/null 2>&1"  ;
-do
-    sleep 5
-    echo -n .
-done
-echo
+if [ ! -z "$_VARS" ]; then
 
-su dachsroot -c "gavo init -d 'host=${PG_HOST} dbname=gavo'"
+  _ALIAS=$(echo ${_VARS[0]} | cut -d"_" -f1)
+  _AUX="${_ALIAS}_NAME"
+  PG_HOST=$(basename `echo "${!_AUX}" | cut -d"=" -f2`)
+  export PG_HOST
 
-dachs serve start
+  # first, make sure the environment is initialised (can't do that
+  # at image build time since the postgres container is not available then)
+  echo -n "Waiting for postgres to come up..."
+  while ! su - dachsroot -c "psql -h ${PG_HOST} --quiet gavo -c 'SELECT 1' > /dev/null 2>&1"  ;
+  do
+      sleep 5
+      echo -n .
+  done
+  echo
+
+  su dachsroot -c "gavo init -d 'host=${PG_HOST} dbname=gavo'"
+
+  dachs serve start
+
+fi

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-PG_VERSION=$(psql --version 2> /dev/null | tr -s ' ' | cut -d' ' -f 3)
-DS_VERSION=$(dachs --version 2> /dev/null | tr -d '(-)' | cut -d' ' -f 3)
-DS_VERSION=${DS_VERSION:-"2.x"}
-DS_PORT=$(cat $GAVOSETTINGS | grep 'serverPort' | cut -d' ' -f2)
+#PG_VERSION=$(psql --version 2> /dev/null | tr -s ' ' | cut -d' ' -f 3)
+#DS_VERSION=$(dachs --version 2> /dev/null | tr -d '(-)' | cut -d' ' -f 3)
+#DS_VERSION=${DS_VERSION:-"2.x"}
+#DS_PORT=$(cat $GAVOSETTINGS | grep 'serverPort' | cut -d' ' -f2)
 
 echo ""
 echo "=========================================================="

@@ -73,7 +73,11 @@ COPY etc/gavo.rc "$GAVOSETTINGS"
 ENV GAVO_PORT=8080
 EXPOSE $GAVO_PORT
 
-COPY bin/help.sh /dachs/help.sh
+COPY bin/help.sh /help.sh
 COPY bin/dachs.sh /dachs.sh
+COPY bin/entrypoint.sh /entrypoint.sh
 
-CMD ["/bin/bash", "--rcfile", "/dachs/help.sh"]
+#ENTRYPOINT ["/bin/bash", "--rcfile", "/entrypoint.sh"]
+#ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/bin/bash"]
+CMD ["--rcfile", "/help.sh"]

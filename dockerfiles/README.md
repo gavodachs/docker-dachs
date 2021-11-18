@@ -18,3 +18,23 @@ To run (and build if not yet) all the containers:
 ```bash
 $ docker-compose -f docker-compose.yml -d up
 ```
+
+## Build dachs
+
+To build the latest stable version of Dachs:
+
+```bash
+$ docker build -t my_dachs ./dachs
+```
+
+To build the beta version of Dachs (ie, using Dachs' 'beta' repository):
+
+```bash
+$ docker build -t my_dachs:beta --build-arg INSTALL_REPO=beta ./dachs
+```
+
+Likewise, to build the backports version of Dachs:
+
+```bash
+$ docker build -t my_dachs:backports --build-arg INSTALL_REPO=backports ./dachs
+```

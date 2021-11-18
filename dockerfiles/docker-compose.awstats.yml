@@ -4,7 +4,7 @@ services:
 
   dachs:
       container_name: dachs
-      image: dachs:${INSTALL_REPO:=latest}
+      image: dachs:${INSTALL_REPO:-latest}
       build:
         context: ./dachs
         args:

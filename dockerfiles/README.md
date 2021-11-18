@@ -2,39 +2,76 @@
 
 Here you'll find docker container recipes and build scripts for Dachs and surrounding services.
 
-The primary container is [`dachs`](dachs/), inside it's directory you'll find
-more detailed information on it's building and content.
-Although `dachs` is self-sufficient, you can have a [`postgres`](postgres/)
-container servicing the database.
-[Awstats](https://awstats.sourceforge.io/) was adopted to parse Dachs' logs,
-the use of it is completely optional too.
+Here will compose the following containers:
 
-Look in [`docker-compose`](docker-compose.yml) for an example of services setup.
+**DaCHS**
+
+- dachs (_sandbox_ container running dachs-server and postgres)
+- dachs-server (container running only dachs-server)
+- dachs-postgres (container running only postgres)
+
+**Extra**
+
+- awstats (optional, container providing Awstats)
+
+In default _compose_ file (`docker-compose.yml`) there is `dachs` (and `awstats`).
+In _compose_ `docker-compose.full.yml`, you'll see `dachs-server` and `dachs-postgres`
+(and `awstats`) composing individual services.
+
+
+## Build details
+Have a look in the [README file in `dachs/`](dachs/README.md) for details on
+building the individual containers.
+
 
 ## Run compose
+> If you don't have yet, install [`docker-compose`](https://docs.docker.com/compose/install/).
 
-To run (and build if not yet) all the containers:
+To run (and build if not yet) the containers:
 
 ```bash
-$ docker-compose -f docker-compose.yml -d up
+$ docker-compose up
 ```
 
-## Build dachs
+This will use `docker-compose.yml` to build and run containers.
+The default Dachs container built is the _latest_ `dachs` container
+-- using GAVO's apt repository.
 
-To build the latest stable version of Dachs:
+To run dachs/postgres server containers individually, `docker-compose.full.yml`
+is a sample of such setup:
 
 ```bash
-$ docker build -t my_dachs ./dachs
+$ docker-compose -f docker-compose.full.yml
 ```
 
-To build the beta version of Dachs (ie, using Dachs' 'beta' repository):
+
+## Build compose
+
+To (re)build the containers defined in a compose file:
 
 ```bash
-$ docker build -t my_dachs:beta --build-arg INSTALL_REPO=beta ./dachs
+$ docker-compose build
 ```
 
-Likewise, to build the backports version of Dachs:
 
+## Environment variables
+The variables used in the _compose_ files can be defined in an "env" file
+to fix some settings on the containers building and running.
+
+See [`env.rc`](env.rc) for an example:
+```
+# Local path for Dachs logs (persistence)
+DACHS_LOGS_PATH="./logs/dachs"
+
+# Local path data/files to mount
+DACHS_DATA_PATH="./data"
+
+# Dachs branch/repository version.
+# Options are: main, backports, gavo (=latest).
+INSTALL_REPO=latest
+```
+
+Example run:
 ```bash
-$ docker build -t my_dachs:backports --build-arg INSTALL_REPO=backports ./dachs
+$ docker-compose --env-file env.rc up
 ```

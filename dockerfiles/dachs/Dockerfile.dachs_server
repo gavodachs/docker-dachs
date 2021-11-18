@@ -60,6 +60,6 @@ COPY etc/gavo.rc "$GAVOSETTINGS"
 
 EXPOSE 8080
 
-COPY bin/dachs.sh /dachs.sh
+COPY bin/serve.sh /serve.sh
 
-CMD ["/bin/bash", "--rcfile", "/dachs.sh"]
+CMD ["/bin/bash", "--rcfile", "/serve.sh"]

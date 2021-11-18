@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+
+  postgres:
+      build:
+        context: ./postgres
+        args:
+          PG_VERSION: "${PG_VERSION:-13}"
+      container_name: postgres
+      image: dachs:postgres
+      tty: true
+      network_mode: 'bridge'
+
+  dachs:
+      build:
+        context: ./dachs
+        dockerfile: Dockerfile.dachs_server
+        args:
+          INSTALL_REPO: "${INSTALL_REPO}"
+          PG_VERSION: "${PG_VERSION:-13}"
+      container_name: dachs
+      image: dachs:server
+      depends_on:
+        - postgres
+      links:
+        - postgres
+      tty: true
+      network_mode: 'bridge'
+      ports:
+        - 8080:8080
+      volumes:
+        - "${DACHS_LOGS_PATH:-./logs/dachs}:/var/gavo/logs"
+
+  awstats:
+      container_name: awstats
+      image: dachs:awstats
+      depends_on:
+        - dachs
+      build:
+        context: ./awstats
+      tty: true
+      network_mode: 'bridge'
+      ports:
+        - 80:80
+      volumes:
+        - "${DACHS_LOGS_PATH:-./logs/dachs}:/var/gavo/logs:ro"

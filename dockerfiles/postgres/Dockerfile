@@ -14,7 +14,7 @@ MAINTAINER "Carlos Brandt <carloshenriquebrandt at gmail>"
 ARG APT_REPO="release"
 
 # BUILD-time arguments; to use a different version of Postgers
-ARG PG_VERSION=11
+ARG PG_VERSION=13
 ENV PG_VERSION=${PG_VERSION}
 
 RUN DEBIAN_FRONTEND='noninteractive' \

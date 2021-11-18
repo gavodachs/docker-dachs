@@ -1,4 +1,5 @@
-ARG DEBIAN_IMAGE="buster"
+ARG DEBIAN_IMAGE="bullseye"
+
 FROM "debian:$DEBIAN_IMAGE"
 
 LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \

@@ -30,7 +30,7 @@ services:
       ports:
         - 8080:8080
       volumes:
-        - "${DACHS_LOGS_PATH:-./logs/dachs}:/var/gavo/logs"
+        - "${DACHS_LOGS_PATH:-./tmp/logs}:/var/gavo/logs"
 
   awstats:
       container_name: awstats
@@ -44,4 +44,4 @@ services:
       ports:
         - 80:80
       volumes:
-        - "${DACHS_LOGS_PATH:-./logs/dachs}:/var/gavo/logs:ro"
+        - "${DACHS_LOGS_PATH:-./tmp/logs}:/var/gavo/logs:ro"

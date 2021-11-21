@@ -1,1 +1,17 @@
-docker-compose.awstats.yml
+version: '3'
+
+services:
+
+  dachs:
+      container_name: dachs
+      image: gavodachs/dachs:latest
+      build:
+        context: ./dachs
+        args:
+          INSTALL_REPO: "${INSTALL_REPO}"   # Builds 'stable' if not defined.
+      tty: true
+      network_mode: 'bridge'
+      ports:
+        - 8080:8080
+      volumes:
+        - "${DACHS_LOGS_PATH:-./tmp/logs}:/var/gavo/logs"

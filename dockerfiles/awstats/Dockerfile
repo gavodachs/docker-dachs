@@ -9,7 +9,7 @@ RUN DEBIAN_FRONTEND='noninteractive'      && \
 COPY /etc/awstats.conf /etc/awstats/awstats.conf.local
 
 # Apache2, by default, is under /usr/local/apache2
-#ENV HTTPD_PREFIX=/usr/local/apache2
+ENV HTTPD_PREFIX=/usr/local/apache2
 
 COPY etc/apache2_awstats.conf $HTTPD_PREFIX/conf/awstats.conf
 RUN echo "Include conf/awstats.conf" >> $HTTPD_PREFIX/conf/httpd.conf

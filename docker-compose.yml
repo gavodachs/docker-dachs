@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  dachs:
+      container_name: dachs
+      image: gavodachs/dachs:latest
+      tty: true
+      network_mode: 'bridge'
+      ports:
+        - 8080:8080
+      volumes:
+        - "${DACHS_LOGS_PATH:-./tmp/logs/dachs}:/var/gavo/logs"
+
+  awstats:
+      container_name: awstats
+      image: gavodachs/awstats:latest
+      depends_on:
+        - dachs
+      tty: true
+      network_mode: 'bridge'
+      ports:
+        - 80:80
+      volumes:
+        - "${DACHS_LOGS_PATH:-./tmp/logs/dachs}:/var/gavo/logs:ro"

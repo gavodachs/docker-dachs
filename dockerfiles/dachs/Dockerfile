@@ -85,7 +85,7 @@ EXPOSE $GAVO_PORT
 
 COPY bin/help.sh /help.sh
 COPY bin/dachs.sh /dachs.sh
-# COPY bin/entrypoint.sh /entrypoint.sh
+COPY bin/start.sh /start.sh
 
 ENTRYPOINT ["/bin/bash"]
 CMD ["--rcfile", "/help.sh"]

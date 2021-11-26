@@ -8,7 +8,7 @@ services:
       build:
         context: ./dachs
         args:
-          INSTALL_REPO: "${INSTALL_REPO}"   # Builds 'stable' if not defined.
+          INSTALL_REPO: "${INSTALL_REPO}"   # Builds 'latest'/ "gavo" if NOT defined.
       tty: true
       network_mode: 'bridge'
       ports:

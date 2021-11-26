@@ -4,7 +4,7 @@ services:
 
   awstats:
       container_name: awstats
-      image: awstats:dachs
+      image: gavodachs/awstats:latest
       depends_on:
         - dachs
       build:

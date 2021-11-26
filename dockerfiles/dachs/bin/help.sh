@@ -36,3 +36,6 @@ echo "DaCHS version: $DS_VERSION"
 echo "PSQL version: $PG_VERSION"
 echo "=========================================================="
 echo ""
+
+#service postgresql status || service postgresql start
+#dachs serve start

@@ -1,5 +1,12 @@
 # DaCHS on Docker
 
+> **NOTE**
+> Recently, the Dachs-on-Docker images repository -- on DockerHub -- have been 
+> changed from `chbrandt` to `gavodachs`repository.
+> The documentation is being reviewed and updated accordingly, but if/whenever 
+> you see a `chbrandt/dachs`, read, change it to `gavodachs/dachs`.
+
+
 This repository contains the files for encapsulating [GAVO DaCHS](http://docs.g-vo.org/DaCHS/)
 in Docker containers.
 You'll find the corresponding images in ['chbrandt/dachs'][4] DockerHub repository.

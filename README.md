@@ -2,6 +2,12 @@
 
 [![Build Status](https://travis-ci.com/gavodachs/docker-dachs.svg?branch=master)](https://travis-ci.com/gavodachs/docker-dachs)
 
+> **NOTE**
+> Recently, the Dachs-on-Docker images repository -- on DockerHub -- have been
+> changed from `chbrandt` to `gavodachs`repository.
+> The documentation is being reviewed and updated accordingly, but if/whenever
+> you see a `chbrandt/dachs`, read, change it to `gavodachs/dachs`.
+
 Here you'll find recipes for build and running [GAVO DaCHS](http://docs.g-vo.org/DaCHS/)
 in Docker containers.
 

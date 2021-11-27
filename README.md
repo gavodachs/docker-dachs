@@ -1,10 +1,76 @@
 # DaCHS on Docker
 
-This repository contains the files for encapsulating [GAVO DaCHS](http://docs.g-vo.org/DaCHS/)
-in Docker containers.
-You'll find the corresponding images in ['chbrandt/dachs'][4] DockerHub repository.
-
 [![Build Status](https://travis-ci.com/gavodachs/docker-dachs.svg?branch=master)](https://travis-ci.com/gavodachs/docker-dachs)
+
+Here you'll find recipes for build and running [GAVO DaCHS](http://docs.g-vo.org/DaCHS/)
+in Docker containers.
+
+These files build the images available in DockerHub's ['gavodachs'][gavodachs] repository.
+
+[gavodachs]: https://hub.docker.com/u/gavodachs
+
+
+## Quick Dachs
+DaCHS _service_ is composed by two daemons: PostgreSQL and the Dachs the _server_.
+Postgres stores the data, while Dachs-server interfaces the user (web, api) and
+manages the astro/planetary data accordingly.
+By default, Dachs provides its (api) endpoints at port `8080` on `localhost`.
+
+> For fine details about DaCHS, refer to the official docs: https://soft.g-vo.org/dachs.
+
+The containers are built using Debian Bullseye and GAVO repositories, see
+[`apt_sources.list`](dockerfiles/dachs/etc/apt_sources.list).
+When building the [dockerfiles/images](dockerfiles/) the (apt) repository(ies)
+to use can be specified.
+Go to [dockerfiles/README.md][] for specifics on building and composing containers.
+
+> The `latest` containers tag includes all (apt) repositories to have the _latest_ Dachs.
+
+When running a Dachs container you'll find a default GavoDachs environment you
+would on a legit Debian OS.
+A default [`/etc/gavo.rc`](dockerfiles/dachs/etc/gavo.rc) is provided and you
+can/should naturally modify.
+
+### Run
+To spin-up a dachs service, quick as your network goes, run the following:
+
+```bash
+chbrandt:~/docker-dachs$ docker run -it -p 8080:8080 --name dachs gavodachs/dachs
+
+# Initialization output (...)
+
+[root@10dd4547ef19]$ /dachs.sh start
+```
+
+First command will instantiate the container and provide you a
+bash session from inside the container.
+The second line then start Postgres and Dachs server.
+
+> If you go to http://localhost:8080 now, you should be able to
+> see an empty -- but working -- Dachs service web page.
+
+
+## Images
+
+There are three primary images providing two different modes for
+running Dachs.
+
+The first one we just saw running in the example above:
+
+- `gavodachs/dachs[:tag]` provides a "one-shot" solution for having
+Dachs running in its simple; Dachs-server and Postgres run inside
+the same container.
+  * This images (tags) provide a good solution for when we're just
+    in need of a sandbox to run some test.
+
+The other two images provide `dachs` and `postgres` in their individual
+containers, to run in parallel, the latter serving the former:
+
+- `gavodachs/server[:tag]` provides gavodachs-server, it depends on another
+  container providing postgres (on default port 5432).
+- `gavodachs/postgres[:tag]` provides PostgreSQL for use by _dachs-server_.
+  * This setup is useful if you want to test production-like environments.
+
 
 **ToC**
 * [Getting started](#getting-started)
@@ -17,37 +83,7 @@ Check the documents directory ([docs/](docs/)) for (practical) notes on
 * [upgrading DaCHS](docs/upgrade_dachs.md),
 * [running dachs and postgresql individually](docs/individual_containers.md).
 
-
 ---
-
-DaCHS -- the service -- is composed by two daemons: PostgreSQL and the DaCHS
-server itself. Postgres stores the data, whereas DaCHS-server interfaces the
-data-store and the user and everything related to [Virtual Observatory](http://ivoa.net/).
-
-If you dig into the files and dockerfiles of this repo you'll find out three
-Docker containers being defined out this repo, which ultimately are defining
-the containers `chbrandt/dachs`, `chbrandt/dachs:server`, `chbrandt/dachs:postgres`.
-
-> **If you're new to DaCHS and Docker don't worry too much and focus on `chbrandt/dachs`**
-> **container. Or all you want is to have a DaCHS instance running in _no time_,**
-> **quick and easy, you too just focus on `chbrandt/dachs` container.**
-
-The dockerfiles in here will setup image families (with their respective tags):
-* `chbrandt/dachs`: DaCHS server + Postgres db -- the quickest way to action
-  * can be called the **_recommended_** container
-* `chbrandt/dachs:server`: the DaCHS data-manager/server suite
-* `chbrandt/dachs:postgres`: the Postgres db used by DaCHS
-
-In this document we'll see how to run [Dachs-on-Docker][4].
-
-For detailed information on DaCHS itself or Docker, please
-visit their official documentation, [DaCHS/docs][1] or [Docker/docs][2].
-
-> Command-lines running from the _host_ system are prefixed by <b><code>(host)</code></b>;
-> And <b><code>(dock)</code></b> are run from inside the container.
-
-[1]: http://dachs-doc.readthedocs.io
-
 
 # Getting started
 

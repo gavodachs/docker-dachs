@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/gavodachs/docker-dachs.svg?branch=master)](https://travis-ci.com/gavodachs/docker-dachs)
 
-> **NOTE**
+> ###### NOTE:
 > Recently, the Dachs-on-Docker images repository -- on DockerHub -- have been
 > changed from `chbrandt` to `gavodachs`repository.
 > The documentation is being reviewed and updated accordingly, but if/whenever
@@ -24,50 +24,43 @@ By default, Dachs provides its (api) endpoints at port `8080` on `localhost`.
 
 > For fine details about DaCHS, refer to the official docs: https://soft.g-vo.org/dachs.
 
-The containers are built using Debian Bullseye and GAVO repositories, see
-[`apt_sources.list`](dockerfiles/dachs/etc/apt_sources.list).
-When building the [dockerfiles/images](dockerfiles/) the (apt) repository(ies)
-to use can be specified.
-Go to [dockerfiles/README.md][] for specifics on building and composing containers.
-
-> The `latest` containers tag includes all (apt) repositories to have the _latest_ Dachs.
-
-When running a Dachs container you'll find a default GavoDachs environment you
-would on a legit Debian OS.
-A default [`/etc/gavo.rc`](dockerfiles/dachs/etc/gavo.rc) is provided and you
-can/should naturally modify.
-
-### Run
-To spin-up a dachs service, quick as your network goes, run the following:
+### Run it
+If all you wanna do now is to run _Dachs-on-Docker_ , run the following:
 
 ```bash
-chbrandt:~/docker-dachs$ docker run -it -p 8080:8080 --name dachs gavodachs/dachs
+[~/docker-dachs]$ docker run -it -p 8080:8080 --name dachs gavodachs/dachs
 
-# Initialization output (...)
+# some initialization output (...)
 
-[root@10dd4547ef19]$ /dachs.sh start
+[root@10dd4547e]$ /dachs.sh start
 ```
 
 First command will instantiate the container and provide you a
 bash session from inside the container.
 The second line then start Postgres and Dachs server.
 
-> If you go to http://localhost:8080 now, you should be able to
+> If you go to [http://localhost:8080](http://localhost:8080) now, 
+> you should be able to
 > see an empty -- but working -- Dachs service web page.
 
 
-## Images
+### Docker Images
+The containers are built using Debian Bullseye and GAVO repositories, see
+[`apt_sources.list`](dockerfiles/dachs/etc/apt_sources.list).
+When building the [dockerfiles/images](dockerfiles/) the (apt) repository(ies)
+to use can be specified.
+Go to [dockerfiles/README.md](dockerfiles/README.md) for specifics on building 
+and composing containers.
 
-There are three primary images providing two different modes for
-running Dachs.
+> The `latest` containers include _all_ (apt) repositories: Debian main/backports, and GAVO release/beta (providing the _latest_ version of Dachs).
+
+There are three images -- `dachs`, `server`, `postgres` -- providing two different modes for running Dachs.
 
 The first one we just saw running in the example above:
 
 - `gavodachs/dachs[:tag]` provides a "one-shot" solution for having
 Dachs running in its simple; Dachs-server and Postgres run inside
 the same container.
-  * This images (tags) provide a good solution for when we're just
-    in need of a sandbox to run some test.
 
 The other two images provide `dachs` and `postgres` in their individual
 containers, to run in parallel, the latter serving the former:
@@ -75,15 +68,17 @@ containers, to run in parallel, the latter serving the former:
 - `gavodachs/server[:tag]` provides gavodachs-server, it depends on another
   container providing postgres (on default port 5432).
 - `gavodachs/postgres[:tag]` provides PostgreSQL for use by _dachs-server_.
-  * This setup is useful if you want to test production-like environments.
 
 
 **ToC**
+
 * [Getting started](#getting-started)
   * [Test migration](#test-migration)
     * [DaCHS 2](#dachs-2)
 
+
 Check the documents directory ([docs/](docs/)) for (practical) notes on
+
 * [versioning your resources](docs/data_publication.md),
 * [persisting data](docs/data_persistence.md),
 * [upgrading DaCHS](docs/upgrade_dachs.md),

@@ -126,8 +126,8 @@ PSQL version: 13.5
 
 
 ### Images
-The containers are built on top of Debian Bullseye image, which GAVO/DaCHS is part
-of the _main_ (and _backports_) repository (current Dachs version: 2.3).
+The containers are built on top of Debian Bullseye image, which GAVO/DaCHS package 
+is part of the _main_ (and _backports_) repository (current Dachs version: 2.3).
 For the `latest` images we use also GAVO repositories, where updates go first (current Dachs version: 2.5).
 
 There are three images in our context: `dachs`, `server`, `postgres`.

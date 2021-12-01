@@ -1,8 +1,7 @@
 # DaCHS on Docker
-
 [![Build Status](https://travis-ci.com/gavodachs/docker-dachs.svg?branch=master)](https://travis-ci.com/gavodachs/docker-dachs)
 
-> ###### NOTE:
+> ###### Update:
 > Recently, the Dachs-on-Docker images repository -- on DockerHub -- have been
 > changed from `chbrandt` to `gavodachs`organisation.
 > The documentation is being reviewed and updated accordingly, but if/whenever
@@ -14,6 +13,16 @@ in Docker containers.
 These files build the images available in DockerHub's [_gavodachs_][gavodachs] repositories.
 
 [gavodachs]: https://hub.docker.com/u/gavodachs
+
+- [Quick Dachs](#quick-dachs)
+    1. [Run it](#run-it)
+    * [Build it](#build-it)
+    * [Images](#images)
+- Other pages:
+    * [versioning your resources](docs/data_publication.md),
+    * [persisting data](docs/data_persistence.md),
+    * [upgrading DaCHS](docs/upgrade_dachs.md),
+    * [running dachs and postgresql individually](docs/individual_containers.md).
 
 
 ## Quick Dachs
@@ -88,12 +97,38 @@ and attach to the same container (dachs):
 ```
 
 
-### Docker Images
+### Build it
+Likewise, if you just want to build the latest `dachs` image, do:
+
+```bash
+[~/]$ cd dockerfiles
+[~/dockerfiles]$ docker build -t my_dachs dachs/
+(...)
+=> => exporting layers
+=> => writing image sha256:ddb02867...
+=> => naming to docker.io/library/my_dachs
+
+[~/dockerfiles]$ docker run --rm my_dachs /help.sh
+
+==========================================================
+This image provides dachs & postgresql bundled together,
+
+(...)
+
+DaCHS version: 2.5
+PSQL version: 13.5
+==========================================================
+
+[~/dockerfiles]$ 
+```
+
+> For more details on _building_ images, go to [dockerfiles/README.md](dockerfiles/README.md)
+
+
+### Images
 The containers are built on top of Debian Bullseye image, which GAVO/DaCHS is part
 of the _main_ (and _backports_) repository (current Dachs version: 2.3).
 For the `latest` images we use also GAVO repositories, where updates go first (current Dachs version: 2.5).
-
-> For more details on _building_ images, go to [dockerfiles/README.md](dockerfiles/README.md)
 
 There are three images in our context: `dachs`, `server`, `postgres`.
 Those three images are to provide two different running setup:
@@ -114,6 +149,7 @@ The other two images provide Dachs and Postgres in their individual containers:
   > How to run `server`/`postgres` is covered in page 
     ['individual_containers.md'](docs/individual_containers.md).
 
+
 #### Tags
 The tags reflect the _apt_ repositories set up in there:
 
@@ -121,127 +157,13 @@ The tags reflect the _apt_ repositories set up in there:
 - `backports`: uses all _Debian_ repositories
 - `main`: uses only Debian's `stable/main`
 
-- - -
-
-
-
-**ToC**
 > See [`etc/apt_sources.list`](dockerfiles/dachs/etc/apt_sources.list) for the 
 > actual list of repositories used (they are enabled-or-not during the building of
 > the image, according to _building arguments_).
 
-
-* [Getting started](#getting-started)
-  * [Test migration](#test-migration)
-    * [DaCHS 2](#dachs-2)
-
-
-Check the documents directory ([docs/](docs/)) for (practical) notes on
-
-* [versioning your resources](docs/data_publication.md),
-* [persisting data](docs/data_persistence.md),
-* [upgrading DaCHS](docs/upgrade_dachs.md),
-* [running dachs and postgresql individually](docs/individual_containers.md).
+Check the documents directory ([docs/](docs/)) for more content.
 
 ---
-
-# Getting started
-
-## `chbrandt/dachs`
-
-The `latest` (Docker) image provides the (DaCHS) service as a whole, encapsulating
-dachs-server _and_ postgresql dbms in the same container.
-
-By default, DaCHS provides an HTML/GUI interface at port `8080`, on running the
-container you want to _map_ the container's port (8080) to some on the host:
-```bash
-(host)$ docker run -it --name dachs -p 8080:8080 chbrandt/dachs
-```
-, where we made an identity map (host's `8080` to container's `8080`).
-
-Inside the container, to start the services work like in a normal machine:
-```bash
-(dock)$ service postgresql start
-(dock)$ service dachs start
-```
-. You can also use a convenience `dachs.sh` script to start _everything_ for you:
-```bash
-(dock)$ /dachs.sh start
-```
-
-> Go to your host's 'http://localhost:8080' to check DaCHS front-page.
-
-To make a directory from the host system available from the container one can
-use the option argument '`-v`' to _mount_ a _volume_ at given location inside
-the container:
-```bash
-(host)$ docker run -it --name dachs -p 80:8080 \
-                   -v /data/inputs/resourceX:/var/gavo/inputs/resourceX \
-                   chbrandt/dachs
-```
-You can mount as many volumes (directories) as you want.
-
-Inside the container, you can use _dachs_ as you would on an usual machine.
-For instance, run DaCHS and load/pub "resourceX":
-```bash
-(dock)$ service postgresql start
-(dock)$ service dachs start
-(dock)$
-(dock)$ cd /var/gavo/inputs
-(dock)$ gavo imp resourceX/q.rd
-(dock)$ gavo pub resourceX/q.rd
-(dock)$
-(dock)$ service dachs reload
-```
-
-## Test migration
-
-If you're using the container to test a new version to eventually migrate your
-datasets to, you'll likely want to mount your VO/DaCHS resources as in the example
-above. To add security to your data -- if they are being shared with the data
-resource live in production -- you may want to use '`ro`' (_read-only_) as an
-option for mounting points:
-```bash
-(host)$ docker run -v /data/rd/input:/var/gavo/inputs/input:ro \
-                   -it --name dachs -p 80:8080 \
-                   chbrandt/dachs
-```
-
-And then do the _imports_, _publications_, data access tests necessary to check
-for compatibility; and eventually migrate to the new version if/when everything is fine.
-
-
-### DaCHS 2
-
-* Docker image tags: `latest`, `2.1` (previously, `beta`)
-
-DaCHS' version 2 is available as a beta version, which runs on Python-3.
-Because it is a major upgrade _dachs_ has gone through, it is a good idea to test
-your data and services as extensively as possible.
-
-To use the new version, just have to use the `beta` image:
-```bash
-(host)$ docker run -v /data/rd/input:/var/gavo/inputs/input:ro \
-                   -it --name dachs -p 80:8080 \
-                   chbrandt/dachs:beta
-```
-
-Everything should feel the same.
-Start docker (here through the convenience script left in your container's '`/`'),
-and use/test it as usual:
-```bash
-(dock)$ /dachs.sh start
-9.6/main (port 5432): down
-[ ok ] Starting PostgreSQL 9.6 database server: main.
-[ ok ] Starting VO server: dachs.
-(dock)$
-(dock)$ dachs --version
-Software (2.0.4) Schema (23/23)
-```
-
-[3]: https://github.com/chbrandt/docker-dachs
-[4]: https://hub.docker.com/r/chbrandt/dachs/
-[2]: https://docs.docker.com/
 
 
 /.\

@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.com/gavodachs/docker-dachs.svg?branch=master)](https://travis-ci.com/gavodachs/docker-dachs)
 
 > ###### Update:
-> Recently, the Dachs-on-Docker images repository -- on DockerHub -- have been
+> Recently the Dachs-on-Docker images repository -- on DockerHub -- have been
 > changed from `chbrandt` to `gavodachs`organisation.
 > The documentation is being reviewed and updated accordingly, but if/whenever
 > you see a `chbrandt/dachs`, read, change it to `gavodachs/dachs`.

@@ -16,8 +16,8 @@ These files build the images available in DockerHub's [_gavodachs_][gavodachs] r
 
 - [Quick Dachs](#quick-dachs)
     1. [Run it](#run-it)
-    * [Build it](#build-it)
-    * [Images](#images)
+    1. [Build it](#build-it)
+    1. [Images](#images)
 - Other pages:
     * [versioning your resources](docs/data_publication.md),
     * [persisting data](docs/data_persistence.md),

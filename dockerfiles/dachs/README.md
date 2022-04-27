@@ -21,7 +21,7 @@ and then run it (exposing port 8080 to localhost).
 > This (default) container runs both _dachs-server_ and _postgres_.
 
 
-## Backports and Beta repositories
+## Debian/GAVO repositories
 _Par défaut_, _dachs_ will be installed from debian-stable (main) repository.
 If you feel like -- or _need_ -- to install some upgrade or patch
 you can make use of Debian backports or GAVO's release/beta repositories.
@@ -35,6 +35,12 @@ The (`build-arg`) option you have to set is `INSTALL_REPO` for that.
 
 > Defining `gavo`, `latest` or _non_ declaring `INSTALL_REPO` have the same effect:
 > to build the _latest_ images (i.e, _gavo_)
+
+The latest/gavo image:
+```bash
+$ docker build --build-arg INSTALL_REPO='gavo' -t dachs:gavo .
+$ docker tag dachs:gavo dachs:latest
+```
 
 To build an image with _backports_ you will do:
 ```bash

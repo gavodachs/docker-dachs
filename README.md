@@ -19,10 +19,7 @@ These files build the images available in DockerHub's [_gavodachs_][gavodachs] r
     1. [Build it](#build-it)
     1. [Images](#images)
 - Other pages:
-    * [versioning your resources](docs/data_publication.md),
-    * [persisting data](docs/data_persistence.md),
-    * [upgrading DaCHS](docs/upgrade_dachs.md),
-    * [running dachs and postgresql individually](docs/individual_containers.md).
+    * [docs/](docs/)
 
 
 ## Quick Dachs
@@ -82,12 +79,12 @@ and attach to the same container (dachs):
   PID TTY      STAT   TIME COMMAND
     1 pts/0    Ss     0:00 /bin/bash --rcfile /help.sh
    50 ?        Ss     0:00 /usr/lib/postgresql/13/bin/postgres -D /var/lib/postgresql/13/main -c config_file=/etc/postgresql/13/main/postgresql.conf
-   52 ?        Ss     0:00 postgres: 13/main: checkpointer 
-   53 ?        Ss     0:00 postgres: 13/main: background writer 
-   54 ?        Ss     0:00 postgres: 13/main: walwriter 
-   55 ?        Ss     0:00 postgres: 13/main: autovacuum launcher 
-   56 ?        Ss     0:00 postgres: 13/main: stats collector 
-   57 ?        Ss     0:00 postgres: 13/main: logical replication launcher 
+   52 ?        Ss     0:00 postgres: 13/main: checkpointer
+   53 ?        Ss     0:00 postgres: 13/main: background writer
+   54 ?        Ss     0:00 postgres: 13/main: walwriter
+   55 ?        Ss     0:00 postgres: 13/main: autovacuum launcher
+   56 ?        Ss     0:00 postgres: 13/main: stats collector
+   57 ?        Ss     0:00 postgres: 13/main: logical replication launcher
    75 pts/0    Sl+    0:01 /usr/bin/python3 /usr/bin/dachs serve debug
    76 ?        Ss     0:00 postgres: 13/main: gavo gavo 127.0.0.1(53334) idle
    78 ?        Ss     0:00 postgres: 13/main: gavo gavo 127.0.0.1(53338) idle
@@ -119,20 +116,20 @@ DaCHS version: 2.5
 PSQL version: 13.5
 ==========================================================
 
-[~/dockerfiles]$ 
+[~/dockerfiles]$
 ```
 
 > For more details on _building_ images, go to [dockerfiles/README.md](dockerfiles/README.md)
 
 
 ### Images
-The containers are built on top of Debian Bullseye image, which GAVO/DaCHS package 
+The containers are built on top of Debian Bullseye image, which GAVO/DaCHS package
 is part of the _main_ (and _backports_) repository (current Dachs version: 2.3).
 For the `latest` images we use also GAVO repositories, where updates go first (current Dachs version: 2.5).
 
 There are three images in our context: `dachs`, `server`, `postgres`.
 Those three images are to provide two different running setup:
-using just one image, `dachs`, like we just did; 
+using just one image, `dachs`, like we just did;
 Or as a pair of containers, `postgres` and (dachs) `server`, talking to each other.
 
 The single-container setup:
@@ -146,7 +143,7 @@ The other two images provide Dachs and Postgres in their individual containers:
 - `gavodachs/server[:tag]` provides gavodachs-server, depends on `postgres`.
 - `gavodachs/postgres[:tag]` provides PostgreSQL for use by _dachs-server_.
 
-  > How to run `server`/`postgres` is covered in page 
+  > How to run `server`/`postgres` is covered in page
     ['individual_containers.md'](docs/individual_containers.md).
 
 
@@ -157,7 +154,7 @@ The tags reflect the _apt_ repositories set up in there:
 - `backports`: uses all _Debian_ repositories
 - `main`: uses only Debian's `stable/main`
 
-> See [`etc/apt_sources.list`](dockerfiles/dachs/etc/apt_sources.list) for the 
+> See [`etc/apt_sources.list`](dockerfiles/dachs/etc/apt_sources.list) for the
 > actual list of repositories used (they are enabled-or-not during the building of
 > the image, according to _building arguments_).
 

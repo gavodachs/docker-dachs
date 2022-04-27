@@ -1,7 +1,8 @@
 # Data publication workflow
 
 Here is a typical workflow suggestion where we use Git to versionize our Dachs resources and have a stable workflow.
-In the first section we use _git_ to [versionize a VO/dachs resource](#resource-versioning), and push and pull to have it
+In the first section we use _git_ to [versionize a VO/dachs resource]
+(#resource-versioning), and push and pull to have it
 [published through the container](#sharing-resource-to-container).
 
 

@@ -3,7 +3,7 @@
 Here you'll find docker container recipes and build scripts for [DaCHS][_dachs]  
 (and surrounding services).
 
-_dachs: https://docs.g-vo.org/DaCHS/
+[_dachs]: https://docs.g-vo.org/DaCHS/
 
 Here will compose the following containers:
 

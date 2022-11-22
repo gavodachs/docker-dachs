@@ -2,6 +2,17 @@ version: '3'
 
 services:
 
+  dachs:
+      container_name: dachs
+      image: gavodachs/dachs:latest
+      command: ['--rcfile','/start.sh']
+      tty: true
+      network_mode: 'bridge'
+      ports:
+        - 8080:8080
+      volumes:
+        - "${DACHS_LOGS_PATH:-./tmp/logs}:/var/gavo/logs"
+
   awstats:
       container_name: awstats
       image: gavodachs/awstats:latest

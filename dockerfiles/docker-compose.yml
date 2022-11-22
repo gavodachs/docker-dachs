@@ -10,5 +10,3 @@ services:
       network_mode: 'bridge'
       ports:
         - 8080:8080
-      volumes:
-        - "${DACHS_LOGS_PATH:-./tmp/logs}:/var/gavo/logs"

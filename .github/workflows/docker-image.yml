@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build ./dockerfiles/dachs --file Dockerfile --tag gavodachs/dachs:$(date +%s)
+      run: docker build ./dockerfiles/dachs --file ./dockerfiles/dachs/Dockerfile --tag gavodachs/dachs:$(date +%s)

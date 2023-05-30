@@ -65,8 +65,8 @@ DaCHS documents are available at:
  - http://dachs-doc.rtfd.io/tutorial.html
 
 
-DaCHS version: 2.5.2
-PSQL version: 13.5
+DaCHS version: 2.7.3
+PSQL version: 13.11
 ==========================================================
 
 root@a3035ad36500:/$

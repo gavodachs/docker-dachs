@@ -1,5 +1,5 @@
 # DaCHS on Docker
-[![Build Status](https://travis-ci.com/gavodachs/docker-dachs.svg?branch=master)](https://travis-ci.com/gavodachs/docker-dachs)
+[![Build Status](https://app.travis-ci.com/gavodachs/docker-dachs.svg?branch=master)](https://app.travis-ci.com/gavodachs/docker-dachs)
 
 > ###### Update:
 > Recently the Dachs-on-Docker images repository -- on DockerHub -- have been
@@ -8,18 +8,14 @@
 > you see a `chbrandt/dachs`, read, change it to `gavodachs/dachs`.
 
 Here you'll find recipes for building and running [GAVO DaCHS](http://docs.g-vo.org/DaCHS/)
-in Docker containers.
+in Docker containers (https://hub.docker.com/u/gavodachs).
 
-These files build the images available in DockerHub's [_gavodachs_][gavodachs] repositories.
-
-[gavodachs]: https://hub.docker.com/u/gavodachs
+ToC:
 
 - [Quick Dachs](#quick-dachs)
     1. [Run it](#run-it)
     1. [Build it](#build-it)
     1. [Images](#images)
-- Other pages:
-    * [docs/](docs/)
 
 
 ## Quick Dachs

@@ -107,7 +107,7 @@ You go to [http://localhost:8080](http://localhost:8080) and you should see Dach
 
 
 ### Build your own image
-Likewise, if you just want to build the latest `dachs` image, do:
+On the other hand, if you want to build your own iamge (the latest `dachs` image), you'll do:
 
 ```bash
 [~/]$ cd dockerfiles
@@ -116,20 +116,10 @@ Likewise, if you just want to build the latest `dachs` image, do:
 => => exporting layers
 => => writing image sha256:ddb02867...
 => => naming to docker.io/library/my_dachs
-
-[~/dockerfiles]$ docker run --rm my_dachs /help.sh
-
-==========================================================
-This image provides dachs & postgresql bundled together,
-
-(...)
-
-DaCHS version: 2.5
-PSQL version: 13.5
-==========================================================
-
-[~/dockerfiles]$
 ```
+
+This will create a new image -- `my_dachs` -- for you (you can check it with `docker images`).
+You can then run `my_dachs` as we did before in "[Run a published image](#run-a-published-image)".
 
 > For more details on _building_ images, go to [dockerfiles/README.md](dockerfiles/README.md)
 

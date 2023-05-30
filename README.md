@@ -35,19 +35,68 @@ If all you wanna do now is to see _Dachs-on-Docker_ running:
 
 ```bash
 [~/]$ docker run -it -p 8080:8080 --name dachs gavodachs/dachs
+```
 
-# some initialization output (...)
+Which should print a help/intro message like the following, and land you in a terminal session _inside_ the container:
 
-[root@10dd4547e]$ service postgresql start
+```
+==========================================================
+This image provides dachs & postgresql bundled together,
+same scenario as you would have if installed the package,
+gavodachs-server, on your own linux box
+
+To start DaCHS (and Postgres), type:
+--------------------
+ $ /dachs.sh start
+--------------------
+It is just a convenience script to start/stop the services.
+See its '--help' for further information about its usage.
+
+
+After starting DaCHS, you should see it working at:
+ - http://localhost[:8080]
+
+
+Use 'gavo/dachs' as usual:
+--------------------
+ $ dachs --help
+--------------------
+DaCHS documents are available at:
+ - http://dachs-doc.rtfd.io/tutorial.html
+
+
+DaCHS version: 2.5.2
+PSQL version: 13.5
+==========================================================
+
+root@a3035ad36500:/$
+```
+
+At this point, you can run and use DaCHS as you would in any "normal" operating system.
+For instance, you can start DaCHS and PostgreSQL in _debug_ mode:
+
+```bash
+root@a3035ad36500:/$ service postgresql start
 Starting PostgreSQL 13 database server: main.
-[root@10dd4547e]$
-[root@10dd4547e]$ dachs serve debug
+root@a3035ad36500:/$
+root@a3035ad36500:/$ dachs serve debug
 <date> [-] Log opened.
 <date> [-] Site starting on 8080
 <date> [-] Starting factory <twisted.web.server.Site object at 0x7fb33c844fd0>
 Starting VO server: dachs.
-
+(...)
 ```
+
+Or -- as per the help message (above) -- you can start Dachs service with `/dachs.sh start`:
+
+```bash
+root@a3035ad36500:/$ /dachs.sh start
+13/main (port 5432): down
+Starting PostgreSQL 13 database server: main.
+Starting VO server: dachs.
+root@a3035ad36500:/$ 
+```
+
 Docker `run` will instantiate the container and hand you a bash session from inside the container.
 Then we start Postgres to finally start Dachs (in `debug` mode to have it verbose).
 
@@ -90,7 +139,7 @@ and attach to the same container (dachs):
    78 ?        Ss     0:00 postgres: 13/main: gavo gavo 127.0.0.1(53338) idle
   133 pts/1    Ss     0:00 bash
   139 pts/1    R+     0:00 ps ax
-  [root@10dd4547e]$
+[root@10dd4547e]$
 ```
 
 

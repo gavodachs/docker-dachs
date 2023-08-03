@@ -4,7 +4,7 @@
 #      you do want if, say, you'd like a few new fancy UDFs or so." -- Markus;
 # + (GAVO) Release and Beta: you get the bleeding edge.
 # Debian backports repo
-#deb http://deb.debian.org/debian bullseye-backports main contrib
+#deb http://deb.debian.org/debian bookworm-backports main contrib
 # GAVO release repo
 #deb http://vo.ari.uni-heidelberg.de/debian release main
 # GAVO beta repo

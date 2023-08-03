@@ -1,12 +1,18 @@
 version: '3'
 
 services:
-
   dachs:
-      container_name: dachs
-      image: gavodachs/dachs:latest
-      command: ['--rcfile','/start.sh']
-      tty: true
-      network_mode: 'bridge'
-      ports:
-        - 8080:8080
+    image: gavodachs/dachs:latest
+
+    build:
+      context: ./dachs 
+      dockerfile: Dockerfile
+      args:
+        INSTALL_REPO: release
+
+    container_name: dachs
+    command: ['--rcfile','/start.sh']
+    tty: true
+    network_mode: 'bridge'
+    ports:
+      - 8080:8080

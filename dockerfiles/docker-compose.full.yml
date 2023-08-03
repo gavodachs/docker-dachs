@@ -3,45 +3,47 @@ version: '3'
 services:
 
   postgres:
-      container_name: postgres
-      image: dachs:postgres
-      build:
-        context: ./dachs
-        args:
-          PG_VERSION: "${PG_VERSION:-13}"
-      tty: true
-      network_mode: 'bridge'
+    build:
+      context: ./dachs
+      args:
+        PG_VERSION: "${PG_VERSION:-15}"
+    image: dachs:postgres
+    container_name: postgres
+    tty: true
+    network_mode: 'bridge'
+
 
   dachs:
-      container_name: dachs
-      image: dachs:server
-      depends_on:
-        - postgres
-      build:
-        context: ./dachs
-        dockerfile: Dockerfile.dachs_server
-        args:
-          INSTALL_REPO: "${INSTALL_REPO}"
-          PG_VERSION: "${PG_VERSION:-13}"
-      links:
-        - postgres
-      tty: true
-      network_mode: 'bridge'
-      ports:
-        - 8080:8080
-      volumes:
-        - "${DACHS_LOGS_PATH:-./tmp/logs}:/var/gavo/logs"
+    build:
+      context: ./dachs
+      dockerfile: Dockerfile.dachs_server
+      args:
+        INSTALL_REPO: "${INSTALL_REPO}"
+        PG_VERSION: "${PG_VERSION:-15}"
+    image: dachs:server
+    container_name: dachs
+    tty: true
+    network_mode: 'bridge'
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    ports:
+      - 8080:8080
+    volumes:
+      - "${DACHS_LOGS_PATH:-./tmp/logs}:/var/gavo/logs"
 
-  awstats:
-      container_name: awstats
-      image: dachs:awstats
-      depends_on:
-        - dachs
-      build:
-        context: ./awstats
-      tty: true
-      network_mode: 'bridge'
-      ports:
-        - 80:80
-      volumes:
-        - "${DACHS_LOGS_PATH:-./tmp/logs}:/var/gavo/logs:ro"
+
+  # awstats:
+  #   container_name: awstats
+  #   image: dachs:awstats
+  #   depends_on:
+  #     - dachs
+  #   build:
+  #     context: ./awstats
+  #   tty: true
+  #   network_mode: 'bridge'
+  #   ports:
+  #     - 80:80
+  #   volumes:
+  #     - "${DACHS_LOGS_PATH:-./tmp/logs}:/var/gavo/logs:ro"

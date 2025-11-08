@@ -1,20 +1,20 @@
-FROM debian:bookworm
+FROM ${BASE_IMAGE:-'debian:bookworm'}
 
 LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
-      Reference=http://arxiv.org/abs/1408.5733
+    Reference=http://arxiv.org/abs/1408.5733
 
 # Everyday tools
 RUN DEBIAN_FRONTEND='noninteractive' \
     && apt-get update \
     && apt-get install -y \
-      curl \
-      git \
-      gnupg2 \
-      locales \
-      procps \
-      sudo \
-      vim \
-      wget \
+    curl \
+    git \
+    gnupg2 \
+    locales \
+    procps \
+    sudo \
+    vim \
+    wget \
     && apt-get clean
 
 # BUILD argument for extra repositories (besides debian/stable) to install dachs.
@@ -46,13 +46,13 @@ RUN curl https://vo.ari.uni-heidelberg.de/debian/gavo-archive-keyring.asc \
 
 # If installing any version other than "main", backports is in there:
 RUN [ "$INSTALL_REPO" != "main" ] \
-      && sed -i '/deb.*backports/s/^#//' $_APT_SOURCES \
-      || echo "NOT using debian/backports repo"
+    && sed -i '/deb.*backports/s/^#//' $_APT_SOURCES \
+    || echo "NOT using debian/backports repo"
 
 # If installing -- i.e, "beta" version -- uncomment gavo's release and beta repos
 RUN [ "$INSTALL_REPO" = "gavo/beta" -o "$INSTALL_REPO" = "latest" -o "$INSTALL_REPO" = "gavo" ] \
-      && sed -i '/deb.*heidelberg/s/^#//' $_APT_SOURCES \
-      || echo "NOT using gavo beta/release repos"
+    && sed -i '/deb.*heidelberg/s/^#//' $_APT_SOURCES \
+    || echo "NOT using gavo beta/release repos"
 
 RUN echo "Using the following repositories:" && grep "deb" $_APT_SOURCES
 

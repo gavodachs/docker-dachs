@@ -6,7 +6,7 @@ services:
     build:
       context: ./dachs
       args:
-        PG_VERSION: "${PG_VERSION:-15}"
+        PG_VERSION: "${PG_VERSION}"
     image: dachs:postgres
     container_name: postgres
     tty: true
@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile.dachs_server
       args:
         INSTALL_REPO: "${INSTALL_REPO}"
-        PG_VERSION: "${PG_VERSION:-15}"
+        PG_VERSION: "${PG_VERSION}"
     image: dachs:server
     container_name: dachs
     tty: true
@@ -32,18 +32,3 @@ services:
       - 8080:8080
     volumes:
       - "${DACHS_LOGS_PATH:-./tmp/logs}:/var/gavo/logs"
-
-
-  # awstats:
-  #   container_name: awstats
-  #   image: dachs:awstats
-  #   depends_on:
-  #     - dachs
-  #   build:
-  #     context: ./awstats
-  #   tty: true
-  #   network_mode: 'bridge'
-  #   ports:
-  #     - 80:80
-  #   volumes:
-  #     - "${DACHS_LOGS_PATH:-./tmp/logs}:/var/gavo/logs:ro"

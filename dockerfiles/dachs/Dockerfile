@@ -1,29 +1,35 @@
-FROM debian:bookworm
+ARG BASE_IMAGE="debian:stable"
+
+# BUILD argument for extra repositories (besides debian/stable) to install dachs.
+# Options are:
+# - "gavo/beta" (gavo/release + gavo/beta)
+# - "backports" (debian/backports)
+# - "main" (debian/main)
+# * Default is "main"
+ARG INSTALL_REPO="main"
+
+# PostgreSQL version to install
+# * Default is "15"
+ARG PG_VERSION="15"
+
+FROM $BASE_IMAGE
 
 LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
-      Reference=http://arxiv.org/abs/1408.5733
+    Reference=http://arxiv.org/abs/1408.5733
 
 # Everyday tools
 RUN DEBIAN_FRONTEND='noninteractive' \
     && apt-get update \
     && apt-get install -y \
-      curl \
-      git \
-      gnupg2 \
-      locales \
-      procps \
-      sudo \
-      vim \
-      wget \
+    curl \
+    git \
+    gnupg2 \
+    locales \
+    procps \
+    sudo \
+    vim \
+    wget \
     && apt-get clean
-
-# BUILD argument for extra repositories (besides debian/stable) to install dachs.
-# Options are:
-# - backports (debian/backports)
-# - gavo/beta (gavo/release + gavo/beta)
-# - main (debian/main)
-# * If not defined, default is 'main'
-ARG INSTALL_REPO="${INSTALL_REPO:-main}"
 
 ENV _APT_SOURCES="/etc/apt/sources.list.d/gavo.list"
 COPY etc/apt_sources.list "$_APT_SOURCES"
@@ -46,13 +52,13 @@ RUN curl https://vo.ari.uni-heidelberg.de/debian/gavo-archive-keyring.asc \
 
 # If installing any version other than "main", backports is in there:
 RUN [ "$INSTALL_REPO" != "main" ] \
-      && sed -i '/deb.*backports/s/^#//' $_APT_SOURCES \
-      || echo "NOT using debian/backports repo"
+    && sed -i '/deb.*backports/s/^#//' $_APT_SOURCES \
+    || echo "NOT using debian/backports repo"
 
 # If installing -- i.e, "beta" version -- uncomment gavo's release and beta repos
 RUN [ "$INSTALL_REPO" = "gavo/beta" -o "$INSTALL_REPO" = "latest" -o "$INSTALL_REPO" = "gavo" ] \
-      && sed -i '/deb.*heidelberg/s/^#//' $_APT_SOURCES \
-      || echo "NOT using gavo beta/release repos"
+    && sed -i '/deb.*heidelberg/s/^#//' $_APT_SOURCES \
+    || echo "NOT using gavo beta/release repos"
 
 RUN echo "Using the following repositories:" && grep "deb" $_APT_SOURCES
 

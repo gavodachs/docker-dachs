@@ -8,6 +8,7 @@ services:
       context: ./dachs 
       dockerfile: Dockerfile
       args:
+        BASE_IMAGE: "${BASE_IMAGE}"
         INSTALL_REPO: "${INSTALL_REPO}"
 
     container_name: dachs

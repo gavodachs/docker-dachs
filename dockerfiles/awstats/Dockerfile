@@ -1,4 +1,4 @@
-FROM httpd:bullseye
+FROM httpd:2.4
 
 RUN DEBIAN_FRONTEND='noninteractive'      && \
     apt-get update                        && \

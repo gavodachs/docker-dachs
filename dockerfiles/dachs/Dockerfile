@@ -1,4 +1,6 @@
-FROM ${BASE_IMAGE:-'debian:bookworm'}
+ARG BASE_IMAGE=${BASE_IMAGE:-'debian:bookworm'}
+
+FROM $BASE_IMAGE
 
 LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
     Reference=http://arxiv.org/abs/1408.5733

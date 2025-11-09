@@ -2,16 +2,38 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ main, master ]
 
 jobs:
-
-  build:
+  test:
     runs-on: ubuntu-latest
+    
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: |
-      docker build ./dockerfiles/dachs -f ./dockerfiles/dachs/Dockerfile -t gavodachs/dachs:$(date +%s)
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Build Docker image
+        run: docker build -t dachs:test ./dockerfiles/dachs/
+      
+      - name: Run Docker container
+        run: docker run --name dachs_container -dt dachs:test
+      
+      - name: Verify container is running
+        run: docker ps | grep -q dachs_container
+      
+      - name: Start dachs service
+        run: docker exec dachs_container /dachs.sh start
+      
+      - name: Copy download script to container
+        run: docker cp data/download_arihip.sh dachs_container:/tmp/download.sh
+      
+      - name: Download arihip data
+        run: docker exec dachs_container /tmp/download.sh arihip /var/gavo/inputs
+      
+      - name: Import arihip data
+        run: docker exec dachs_container dachs imp -M 1000 arihip/q.rd
+      
+      - name: Run all tests
+        run: docker exec dachs_container dachs test ALL

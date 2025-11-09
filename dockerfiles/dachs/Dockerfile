@@ -1,4 +1,16 @@
-ARG BASE_IMAGE=${BASE_IMAGE:-'debian:bookworm'}
+ARG BASE_IMAGE="debian:stable"
+
+# BUILD argument for extra repositories (besides debian/stable) to install dachs.
+# Options are:
+# - "gavo/beta" (gavo/release + gavo/beta)
+# - "backports" (debian/backports)
+# - "main" (debian/main)
+# * Default is "main"
+ARG INSTALL_REPO="main"
+
+# PostgreSQL version to install
+# * Default is "15"
+ARG PG_VERSION="15"
 
 FROM $BASE_IMAGE
 
@@ -18,14 +30,6 @@ RUN DEBIAN_FRONTEND='noninteractive' \
     vim \
     wget \
     && apt-get clean
-
-# BUILD argument for extra repositories (besides debian/stable) to install dachs.
-# Options are:
-# - backports (debian/backports)
-# - gavo/beta (gavo/release + gavo/beta)
-# - main (debian/main)
-# * If not defined, default is 'main'
-ARG INSTALL_REPO="${INSTALL_REPO:-main}"
 
 ENV _APT_SOURCES="/etc/apt/sources.list.d/gavo.list"
 COPY etc/apt_sources.list "$_APT_SOURCES"

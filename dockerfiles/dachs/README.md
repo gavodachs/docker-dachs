@@ -10,7 +10,6 @@ $ docker run -it --name some-dachs -p 8080:8080 dachs
 This will create a container with the latest stable version of Dachs,
 as available in Debian 'main' repository.
 
-
 ## Debian/GAVO repositories
 _Par défaut_, _dachs_ will be installed from debian-stable (main) repository.
 If you feel like -- or _need_ -- to install some upgrade or patch

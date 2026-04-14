@@ -1,99 +1,74 @@
 ARG BASE_IMAGE="debian:stable"
-
-# BUILD argument for extra repositories (besides debian/stable) to install dachs.
-# Options are:
-# - "gavo/beta" (gavo/release + gavo/beta)
-# - "backports" (debian/backports)
-# - "main" (debian/main)
-# * Default is "main"
+ARG PG_VERSION="17"
 ARG INSTALL_REPO="main"
-
-# PostgreSQL version to install
-# * Default is "15"
-ARG PG_VERSION="15"
+ARG CONFIG_DIR="configs"
+ARG DOCKER_BIN="bin"
+ARG GAVO_DATA="data"
 
 FROM $BASE_IMAGE
 
-LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
+ARG PG_VERSION
+ARG INSTALL_REPO
+ARG CONFIG_DIR
+ARG DOCKER_BIN
+ARG GAVO_DATA
+
+LABEL Description=DaCHS\ Server\ for\ compose.\ DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
     Reference=http://arxiv.org/abs/1408.5733
 
-# Everyday tools
+# 1. Install Tools
 RUN DEBIAN_FRONTEND='noninteractive' \
     && apt-get update \
     && apt-get install -y \
-    curl \
-    git \
-    gnupg2 \
-    locales \
-    procps \
-    sudo \
-    vim \
-    wget \
+    curl git gnupg2 locales procps sudo vim wget \
     && apt-get clean
 
+# 2. Setup GAVO Repo
 ENV _APT_SOURCES="/etc/apt/sources.list.d/gavo.list"
-COPY etc/apt_sources.list "$_APT_SOURCES"
+COPY ${DOCKER_BIN}/apt_sources.list "$_APT_SOURCES"
 
-# Some fixes on the environment
-# ---
-# This is the brute-force solution for Debian;
-# I am having problems in set locales non-interactively,
-# and since I really need the "C/UTF8" for postgres, will just set it for all.
-ENV LC_ALL=C.UTF-8
-RUN echo LC_ALL="$LC_ALL" > /etc/default/locale
-
-RUN sed -i 's/exit 101/exit 0/' /usr/sbin/policy-rc.d
-# ---
-
-# Setup GAVO key, then repositories according to INSTALL_REPO
-# RUN wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
-RUN curl https://vo.ari.uni-heidelberg.de/debian/gavo-archive-keyring.asc \
+RUN curl -s https://vo.ari.uni-heidelberg.de/debian/gavo-archive-keyring.asc \
     | tee /etc/apt/trusted.gpg.d/gavo-archive.keyring.asc
 
-# If installing any version other than "main", backports is in there:
 RUN [ "$INSTALL_REPO" != "main" ] \
     && sed -i '/deb.*backports/s/^#//' $_APT_SOURCES \
-    || echo "NOT using debian/backports repo"
+    || echo "Using main repo"
 
-# If installing -- i.e, "beta" version -- uncomment gavo's release and beta repos
-RUN [ "$INSTALL_REPO" = "gavo/beta" -o "$INSTALL_REPO" = "latest" -o "$INSTALL_REPO" = "gavo" ] \
-    && sed -i '/deb.*heidelberg/s/^#//' $_APT_SOURCES \
-    || echo "NOT using gavo beta/release repos"
-
-RUN echo "Using the following repositories:" && grep "deb" $_APT_SOURCES
-
-# Define some important env
+# 3. Environment and DaCHS Vars
+ENV LC_ALL=C.UTF-8
 ENV GAVO_ROOT="/var/gavo"
 ENV GAVO_INPUTS="${GAVO_ROOT}/inputs"
 ENV GAVO_SETTINGS="/etc/gavo.rc"
 ENV GAVOSETTINGS="$GAVO_SETTINGS"
-
 ENV PG_VERSION=${PG_VERSION}
 
-# Install only the core of gavo and spatial extension to db
-RUN DEBIAN_FRONTEND='noninteractive'                  && \
-    apt-get update                                    && \
-    apt-get install -y python3-gavo                   && \
-    apt-get install -y postgresql-$PG_VERSION-q3c     && \
+# 4. Install DaCHS and Client-side Extensions
+RUN DEBIAN_FRONTEND='noninteractive' && \
+    apt-get update && \
+    apt-get install -y python3-gavo postgresql-$PG_VERSION-q3c && \
     apt-get clean
 
-# Setup dachs environment
-RUN addgroup --system gavo                                          && \
-    adduser --system --ingroup gavo gavo                            && \
+# 5. User Permissions
+RUN addgroup --system gavo && \
+    adduser --system --ingroup gavo gavo && \
     adduser --disabled-password --gecos "" --ingroup gavo dachsroot && \
-    adduser --quiet gavo gavo                                       && \
-    adduser --quiet dachsroot gavo                                  && \
-    mkdir -m 775 "${GAVO_ROOT}"                                     && \
+    adduser --quiet gavo gavo && \
+    adduser --quiet dachsroot gavo && \
+    mkdir -p -m 775 "${GAVO_ROOT}" && \
     chown dachsroot "${GAVO_ROOT}"
 
-# Copy gavo settings
-COPY etc/gavo.rc "$GAVO_SETTINGS"
+# 6. Config and Launch
+COPY ${DOCKER_BIN}/gavo.rc "$GAVO_SETTINGS"
+COPY ${CONFIG_DIR}/gavo.r[c] "$GAVO_SETTINGS"
+COPY ${CONFIG_DIR}/defaultmeta.tx[t] ${GAVO_ROOT}/etc/
+COPY ${CONFIG_DIR}/userconfig.r[d] ${GAVO_ROOT}/etc/
 
-# Add a 'port' variable to env
+# Adding a directory to store data locally
+RUN mkdir ${GAVO_DATA}
+
 ENV GAVO_PORT=8080
 EXPOSE $GAVO_PORT
 
-COPY bin/dachs_server.sh /serve.sh
-
+COPY ${DOCKER_BIN}/dachs_server.sh /serve.sh
 ENTRYPOINT ["/bin/bash"]
 CMD ["--rcfile", "/serve.sh"]

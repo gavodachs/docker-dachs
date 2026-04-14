@@ -1,95 +1,77 @@
+# 1. Declare ARGs (Values come from --build-arg or docker-compose)
 ARG BASE_IMAGE="debian:stable"
-
-# BUILD argument for extra repositories (besides debian/stable) to install dachs.
-# Options are:
-# - "gavo/beta" (gavo/release + gavo/beta)
-# - "backports" (debian/backports)
-# - "main" (debian/main)
-# * Default is "main"
+ARG PG_VERSION="17"
 ARG INSTALL_REPO="main"
-
-# PostgreSQL version to install
-# * Default is "15"
-ARG PG_VERSION="15"
+ARG DOCKER_BIN="bin"
 
 FROM $BASE_IMAGE
 
-LABEL Description=DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
+# Re-declare for use in RUN commands
+ARG PG_VERSION
+ARG INSTALL_REPO
+ARG DOCKER_BIN
+
+LABEL Description=DaCHS\ Postgres\ for\ compose.\ DaCHS\ is\ a\ publishing\ infrastructure\ for\ the\ Virtual\ Observatory. \
     Reference=http://arxiv.org/abs/1408.5733
 
-# Everyday tools
+# 1. Install System Tools
 RUN DEBIAN_FRONTEND='noninteractive' \
     && apt-get update \
     && apt-get install -y \
-    curl \
-    git \
-    gnupg2 \
-    locales \
-    procps \
-    sudo \
-    vim \
-    wget \
+    curl git gnupg2 locales procps sudo vim wget \
     && apt-get clean
 
-
+# 2. Setup GAVO Repository
 ENV _APT_SOURCES="/etc/apt/sources.list.d/gavo.list"
-COPY etc/apt_sources.list "$_APT_SOURCES"
+COPY ${DOCKER_BIN}/apt_sources.list "$_APT_SOURCES"
 
-# Some fixes on the environment
-# ---
-# This is the brute-force solution for Debian;
-# I am having problems in set locales non-interactively,
-# and since I really need the "C/UTF8" for postgres, will just set it for all.
-ENV LC_ALL=C.UTF-8
-RUN echo LC_ALL="$LC_ALL" > /etc/default/locale
-
-RUN sed -i 's/exit 101/exit 0/' /usr/sbin/policy-rc.d
-# ---
-
-# Setup GAVO key, then repositories according to INSTALL_REPO
-# RUN wget -qO - http://docs.g-vo.org/archive-key.asc | apt-key add -
-RUN curl https://vo.ari.uni-heidelberg.de/debian/gavo-archive-keyring.asc \
+RUN curl -s https://vo.ari.uni-heidelberg.de/debian/gavo-archive-keyring.asc \
     | tee /etc/apt/trusted.gpg.d/gavo-archive.keyring.asc
 
-# If installing any version other than "main", backports is in there:
 RUN [ "$INSTALL_REPO" != "main" ] \
     && sed -i '/deb.*backports/s/^#//' $_APT_SOURCES \
-    || echo "NOT using debian/backports repo"
+    || echo "Using main repo only"
 
-# If installing -- i.e, "beta" version -- uncomment gavo's release and beta repos
-RUN [ "$INSTALL_REPO" = "gavo/beta" -o "$INSTALL_REPO" = "latest" -o "$INSTALL_REPO" = "gavo" ] \
-    && sed -i '/deb.*heidelberg/s/^#//' $_APT_SOURCES \
-    || echo "NOT using gavo beta/release repos"
+# 3. Environment Fixes
+ENV LC_ALL=C.UTF-8
+RUN echo LC_ALL="$LC_ALL" > /etc/default/locale
+RUN sed -i 's/exit 101/exit 0/' /usr/sbin/policy-rc.d
 
-RUN echo "Using the following repositories:" && grep "deb" $_APT_SOURCES
-
+# 4. Install Postgres and VO Extensions
 ENV PG_VERSION=${PG_VERSION}
+RUN DEBIAN_FRONTEND='noninteractive' \
+    && apt-get update \
+    && apt-get install -y \
+    postgresql-$PG_VERSION \
+    postgresql-$PG_VERSION-pgsphere \
+    postgresql-$PG_VERSION-q3c \
+    && apt-get clean
 
-RUN DEBIAN_FRONTEND='noninteractive'                                && \
-    apt-get update                                                  && \
-    apt-get install -y postgresql-$PG_VERSION                       && \
-    apt-get install -y postgresql-$PG_VERSION-pgsphere              && \
-    apt-get install -y postgresql-$PG_VERSION-q3c                   && \
-    apt-get clean
+# 5. Network Configuration (Allow Swarm Overlay Network)
+RUN PGFILE=/etc/postgresql/${PG_VERSION}/main/pg_hba.conf \
+    && echo 'host  all  all  0.0.0.0/0  trust' >> $PGFILE \
+    && echo "listen_addresses='*'" >> "${PGFILE%/*}/postgresql.conf"
 
-RUN PGFILE=/etc/postgresql/${PG_VERSION}/main/pg_hba.conf           && \
-    echo 'host  all  all  172.17.0.0/24  trust' >> $PGFILE          && \
-    echo "listen_addresses='*'" >> "${PGFILE%/*}/postgresql.conf"
+# 6. Database Initialization with Robust Wait Loop
+RUN mkdir -p -m 777 /var/run/postgresql/${PG_VERSION}-main.pg_stat_tmp/ && \
+    chown postgres:postgres /var/run/postgresql/${PG_VERSION}-main.pg_stat_tmp/ && \
+    # Start Postgres in background
+    su - postgres -c "/usr/lib/postgresql/${PG_VERSION}/bin/postgres \
+    -D /var/lib/postgresql/${PG_VERSION}/main \
+    -c config_file=/etc/postgresql/${PG_VERSION}/main/postgresql.conf" & \
+    # THE ALTERNATIVE TO SLEEP: Wait until pg_isready returns 0 (ready)
+    until su postgres -c "pg_isready"; do \
+      echo "Waiting for Postgres to start..."; \
+      sleep 1; \
+    done && \
+    # Run setup commands
+    su postgres -c "createuser -s dachsroot" && \
+    su postgres -c "createuser -s root" && \
+    su postgres -c "createdb gavo" && \
+    # Shutdown gracefully to finalize the layer
+    su postgres -c "/usr/lib/postgresql/${PG_VERSION}/bin/pg_ctl -D /var/lib/postgresql/${PG_VERSION}/main stop"
 
-RUN PGDATA=/var/lib/postgresql/${PG_VERSION}                            \
-    mkdir -p -m 777 /var/run/postgresql/${PG_VERSION}-main.pg_stat_tmp/ && \
-    su - postgres  -c "/usr/lib/postgresql/${PG_VERSION}/bin/postgres   \
-    -c config_file=/etc/postgresql/${PG_VERSION}/main/postgresql.conf \
-    -c logging_collector=on"                                          & \
-    sleep 5                                                             && \
-    su postgres -c "createuser -s dachsroot"                            && \
-    su postgres -c "createuser -s root"                                 && \
-    su postgres -c "createdb gavo"
-
-# Expose Postgres port
 EXPOSE 5432
-
-COPY bin/dachs_postgres.sh /serve.sh
-
+COPY ${DOCKER_BIN}/dachs_postgres.sh /serve.sh
 ENTRYPOINT ["/bin/bash"]
 CMD ["--rcfile", "/serve.sh"]

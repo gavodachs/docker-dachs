@@ -1,34 +1,46 @@
-version: '3'
-
 services:
-
   postgres:
     build:
-      context: ./dachs
+      context: .
+      dockerfile: dachs/Dockerfile.dachs_postgres
       args:
-        PG_VERSION: "${PG_VERSION}"
-    image: dachs:postgres
-    container_name: postgres
+        PG_VERSION: ${PG_VERSION}
+        BASE_IMAGE: ${BASE_IMAGE}
+        INSTALL_REPO: ${INSTALL_REPO}
+        DOCKER_BIN: ${DOCKER_BIN}
+    container_name: ${PG_NAME}
     tty: true
-    network_mode: 'bridge'
-
+    networks:
+      - dachs-net
+    volumes:
+      - pgdata:/var/lib/postgresql/${PG_NAME}
 
   dachs:
     build:
-      context: ./dachs
-      dockerfile: Dockerfile.dachs_server
+      context: .
+      dockerfile: dachs/Dockerfile.dachs_server
       args:
-        INSTALL_REPO: "${INSTALL_REPO}"
-        PG_VERSION: "${PG_VERSION}"
-    image: dachs:server
-    container_name: dachs
+        PG_VERSION: ${PG_VERSION}
+        BASE_IMAGE: ${BASE_IMAGE}
+        INSTALL_REPO: ${INSTALL_REPO}
+        CONFIG_DIR: ${CONFIG_DIR}
+        DOCKER_BIN: ${DOCKER_BIN}
+        GAVO_DATA: ${GAVO_DATA}
     tty: true
-    network_mode: 'bridge'
-    depends_on:
-      - postgres
-    links:
-      - postgres
+    container_name: ${DACHS_NAME}
     ports:
-      - 8080:8080
+      - "${SERVER_PORT}:8080"
+    environment:
+      - GAVO_DB_HOST=${PG_NAME}
+    networks:
+      - dachs-net
     volumes:
-      - "${DACHS_LOGS_PATH:-./tmp/logs}:/var/gavo/logs"
+      - dachs_logs:/var/gavo
+
+networks:
+  dachs-net:
+    driver: bridge
+
+volumes:
+  pgdata:
+  dachs_logs:
